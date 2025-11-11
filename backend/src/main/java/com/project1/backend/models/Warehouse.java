@@ -1,23 +1,45 @@
 package com.project1.backend.models;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "warehouses")
 public class Warehouse {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column
     private String location;
+
+    @Column(nullable = false)
     private Integer capacity;
-    private List<InventoryItem> inventory;
+
+    // @OneToMany(mappedBy = "warehouse")
+    // private Set<InventoryItem> inventory = new HashSet<>();
 
     public Warehouse() {
     }
 
-    public Warehouse(Integer id, String name, String location, Integer capacity, List<InventoryItem> inventory) {
-        this.id = id;
+    public Warehouse(String name, String location, Integer capacity) {
         this.name = name;
         this.location = location;
         this.capacity = capacity;
-        this.inventory = inventory;
+        // this.inventory = new HashSet<>();
     }
 
     public Integer getId() {
@@ -52,67 +74,35 @@ public class Warehouse {
         this.capacity = capacity;
     }
 
-    public List<InventoryItem> getInventory() {
-        return inventory;
-    }
+    // public Set<InventoryItem> getInventory() {
+    //     return inventory;
+    // }
 
-    public void setInventory(List<InventoryItem> inventory) {
-        this.inventory = inventory;
-    }
+    // public void setInventory(Set<InventoryItem> inventory) {
+    //     this.inventory = inventory;
+    // }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((location == null) ? 0 : location.hashCode());
-        result = prime * result + ((capacity == null) ? 0 : capacity.hashCode());
-        result = prime * result + ((inventory == null) ? 0 : inventory.hashCode());
-        return result;
+        return Objects.hash(id);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        } else if (!(obj instanceof Warehouse)) {
             return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Warehouse other = (Warehouse) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        if (location == null) {
-            if (other.location != null)
-                return false;
-        } else if (!location.equals(other.location))
-            return false;
-        if (capacity == null) {
-            if (other.capacity != null)
-                return false;
-        } else if (!capacity.equals(other.capacity))
-            return false;
-        if (inventory == null) {
-            if (other.inventory != null)
-                return false;
-        } else if (!inventory.equals(other.inventory))
-            return false;
-        return true;
+        } else {
+            Warehouse other = (Warehouse) obj;
+            return Objects.equals(id, other.id);
+        }
     }
 
     @Override
     public String toString() {
         return "Warehouse [id=" + id + ", name=" + name + ", location=" + location + ", capacity=" + capacity
-                + ", inventory=" + inventory + "]";
+                +  "]";
     }
     
 }
