@@ -1,17 +1,41 @@
 package com.project1.backend.models;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "products")
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Column(nullable = false)
     private Integer id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String description;
-    private String category;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name="category_id")
+    Category category;
+
+    @Column(nullable = false)
     private Double price;
     
     public Product() {
     }
 
-    public Product(Integer id, String name, String description, String category, Double price) {
-        this.id = id;
+    public Product(String name, String description, Category category, Double price) {
         this.name = name;
         this.description = description;
         this.category = category;
@@ -42,11 +66,11 @@ public class Product {
         this.description = description;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 

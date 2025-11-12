@@ -14,25 +14,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project1.backend.dtos.CategoryDTO;
-import com.project1.backend.models.Category;
-import com.project1.backend.services.CategoryService;
+import com.project1.backend.models.Product;
+import com.project1.backend.models.Warehouse;
+import com.project1.backend.services.ProductService;
 
 @RestController
-@RequestMapping("/categories")
-public class CategoryController {
+@RequestMapping("/products")
+public class ProductController {
     
-    private final CategoryService service;
-    public CategoryController(CategoryService service) {
+    private final ProductService service;
+    public ProductController(ProductService service) {
         this.service = service;
     }
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody CategoryDTO dto) {
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         try {
-            Category category = new Category();
-            category.setName(dto.getName());
-            Category saved = service.createCategory(category);
+            Product saved = service.createProduct(product);
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().header("error", e.getMessage()).build();
@@ -42,20 +40,20 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Category>> findAllCategories() {
+    public ResponseEntity<List<Product>> findAllProducts() {
         try {
-            List<Category> categories = service.findAllCategories();
-            return ResponseEntity.ok(categories);
+            List<Product> products = service.findAllProducts();
+            return ResponseEntity.ok(products);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().header("error", e.getMessage()).build();
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> findCategoryById(@PathVariable Integer id) {
+    public ResponseEntity<Product> findProductById(@PathVariable Integer id) {
         try {
-            Category category = service.findCategoryById(id);
-            return ResponseEntity.ok(category);
+            Product product = service.findProductById(id);
+            return ResponseEntity.ok(product);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().header("error", e.getMessage()).build();
         } catch (Exception e) {
@@ -64,11 +62,9 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Integer id, @RequestBody CategoryDTO dto) {
+    public ResponseEntity<Product> updateProduct(@PathVariable Integer id, @RequestBody Product updatedProduct) {
         try {
-            Category category = new Category();
-            category.setName(dto.getName());
-            Category saved = service.updateCategory(id, category);
+            Product saved = service.updateProduct(id, updatedProduct);
             return ResponseEntity.ok(saved);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().header("error", e.getMessage()).build();
@@ -78,14 +74,15 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteProduct(@PathVariable Integer id) {
         try {
-            service.deleteCategory(id);
-            return ResponseEntity.ok("Category deleted successfully.");
+            service.deleteProduct(id);
+            return ResponseEntity.ok("Product deleted successfully.");
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().header("error", e.getMessage()).build();
         } catch (Exception e) {
             return ResponseEntity.internalServerError().header("error", e.getMessage()).build();
         }
     }
+
 }

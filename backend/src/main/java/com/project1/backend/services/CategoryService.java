@@ -16,8 +16,10 @@ public class CategoryService {
         this.repository = repository;
     }
 
-    public Category createCategory(String name) {
-        Category category = new Category(name);
+    public Category createCategory(Category category) {
+        if (category.getName() == null || category.getName().isBlank()) {
+            throw new IllegalArgumentException("Category name cannot be empty.");
+        }
         return repository.save(category);
     }
 
@@ -25,17 +27,18 @@ public class CategoryService {
         return repository.findAll();
     }
 
-    public Category findCategoryById(Integer id) throws NoSuchElementException {
+    public Category findCategoryById(Integer id) {
         return repository.findById(id)
         .orElseThrow(() -> new NoSuchElementException("No category found with that ID."));
     }
 
-    public Category updateCategory(Integer id, String name) throws NoSuchElementException {
-        Category outdatedCategory = repository.findById(id)
+    public Category updateCategory(Integer id, Category updatedCategory) {
+        return repository.findById(id)
+        .map(outdatedCategory -> {
+            outdatedCategory.setName(updatedCategory.getName());
+            return repository.save(outdatedCategory);
+        })
         .orElseThrow(() -> new NoSuchElementException("No category found with that ID."));
-
-        outdatedCategory.setName(name);
-        return repository.save(outdatedCategory);
     }
 
     public void deleteCategory(Integer id) {
