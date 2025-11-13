@@ -8,7 +8,7 @@ import com.project1.backend.dtos.WarehouseResponse;
 import com.project1.backend.models.Warehouse;
 
 public class WarehouseMapper {
-    public static WarehouseResponse toResponse(Warehouse warehouse) {
+    public static WarehouseResponse toResponse(Warehouse warehouse, Integer usedCapacity) {
         List<InventoryResponse> summarizedInventory = warehouse.getInventory().stream()
             .map(inventory -> new InventoryResponse(
                 inventory.getId().getWarehouseId(),
@@ -24,6 +24,7 @@ public class WarehouseMapper {
             warehouse.getName(),
             warehouse.getLocation(),
             warehouse.getCapacity(),
+            usedCapacity,
             summarizedInventory
         );
     }

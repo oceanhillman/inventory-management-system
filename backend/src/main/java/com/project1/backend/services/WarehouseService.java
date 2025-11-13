@@ -9,6 +9,7 @@ import com.project1.backend.dtos.WarehouseRequest;
 import com.project1.backend.dtos.WarehouseResponse;
 import com.project1.backend.mappers.WarehouseMapper;
 import com.project1.backend.models.Warehouse;
+import com.project1.backend.repositories.InventoryRepository;
 import com.project1.backend.repositories.WarehouseRepository;
 
 import jakarta.transaction.Transactional;
@@ -17,31 +18,35 @@ import jakarta.transaction.Transactional;
 public class WarehouseService {
     
     private final WarehouseRepository warehouseRepository;
-    public WarehouseService(WarehouseRepository warehouseRepository) {
+    private final InventoryRepository inventoryRepository;
+
+    public WarehouseService(WarehouseRepository warehouseRepository,
+                            InventoryRepository inventoryRepository) {
         this.warehouseRepository = warehouseRepository;
+        this.inventoryRepository = inventoryRepository;
     }
     
     @Transactional
     public WarehouseResponse createWarehouse(WarehouseRequest request) {
-        return WarehouseMapper.toResponse(
-            warehouseRepository.save(WarehouseMapper.fromRequest(request))
-        );
+        Warehouse warehouse = warehouseRepository.save(WarehouseMapper.fromRequest(request));
+        // new warehouse has 0 usedCapacity 
+        return WarehouseMapper.toResponse(warehouse, 0);
     }
 
     public List<WarehouseResponse> findAllWarehouses() {
-        List<WarehouseResponse> response = 
-            warehouseRepository.findAll().stream()
-                .map(WarehouseMapper::toResponse)
-                .toList();
-        return response;
+        return warehouseRepository.findAll().stream()
+            .map(warehouse -> {
+                // we need to query each warehouse for its used capacity
+                return WarehouseMapper.toResponse(warehouse, inventoryRepository.getUsedCapacity(warehouse.getId()));
+            })
+            .toList();
     }
 
     public WarehouseResponse findWarehouseById(Integer id) {
-        return WarehouseMapper.toResponse(
-            warehouseRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No warehouse found with that ID.")
-            )
-        );
+        Warehouse warehouse = warehouseRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("No warehouse found with that ID."));
+        
+        return WarehouseMapper.toResponse(warehouse, inventoryRepository.getUsedCapacity(id));
     }
 
     @Transactional
@@ -50,11 +55,17 @@ public class WarehouseService {
         Warehouse warehouse = warehouseRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("No warehouse found with that ID."));
 
+        final int usedCapacity = inventoryRepository.getUsedCapacity(id);
+
+        if (request.capacity() < usedCapacity) {
+            throw new IllegalArgumentException("Inventory exceeds the given capacity.");
+        }
+
         warehouse.setName(request.name());
         warehouse.setLocation(request.location());
         warehouse.setCapacity(request.capacity());
 
-        return WarehouseMapper.toResponse(warehouseRepository.save(warehouse));
+        return WarehouseMapper.toResponse(warehouseRepository.save(warehouse), usedCapacity);
     }
 
     @Transactional

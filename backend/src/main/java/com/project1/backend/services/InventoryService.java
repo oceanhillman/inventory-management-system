@@ -40,6 +40,14 @@ public class InventoryService {
         Product product = productRepository.findById(request.productId())
             .orElseThrow(() -> new NoSuchElementException("Product not found."));
 
+        final int usedCapacity = inventoryRepository.getUsedCapacity(warehouseId);
+        final int remainingCapacity = warehouse.getCapacity() - usedCapacity;
+
+        // check capacity
+        if (remainingCapacity < request.quantity()) {
+            throw new IllegalArgumentException("Warehouse capacity exceeded.");
+        }
+
         InventoryId id = new InventoryId(warehouseId, request.productId());
         Inventory inventory = inventoryRepository.findById(id)
             .orElse(new Inventory(warehouse, product, 0, request.storageLocation()));
@@ -50,6 +58,7 @@ public class InventoryService {
         }
 
         inventory.setQuantity(inventory.getQuantity() + request.quantity());
+        
         return InventoryMapper.toResponse(inventoryRepository.save(inventory));
     }
 
@@ -68,8 +77,19 @@ public class InventoryService {
     public InventoryResponse updateQuantity(Integer warehouseId, InventoryRequest request) {
         InventoryId id = new InventoryId(warehouseId, request.productId());
 
+        Warehouse warehouse = warehouseRepository.findById(warehouseId)
+            .orElseThrow(() -> new NoSuchElementException("Warehouse not found."));
         Inventory inventory = inventoryRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("Inventory entry not found."));
+
+        // subtract the existing quantity value so we don't double-count
+        final int usedCapacity = inventoryRepository.getUsedCapacity(warehouseId) - inventory.getQuantity();
+        final int remainingCapacity = warehouse.getCapacity() - usedCapacity;
+
+        // check capacity
+        if (remainingCapacity < request.quantity()) {
+            throw new IllegalArgumentException("Warehouse capacity exceeded.");
+        }
 
         inventory.setQuantity(request.quantity());
         return InventoryMapper.toResponse(inventoryRepository.save(inventory));

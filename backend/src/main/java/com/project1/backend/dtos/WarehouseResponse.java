@@ -7,5 +7,6 @@ public record WarehouseResponse (
     String name,
     String location,
     Integer capacity,
+    Integer usedCapacity,
     List<InventoryResponse> inventory
 ) {}
