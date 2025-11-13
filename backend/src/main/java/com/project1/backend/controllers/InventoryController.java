@@ -41,6 +41,18 @@ public class InventoryController {
         }
     }
 
+    @PostMapping("/transfer/{destinationId}")
+    public ResponseEntity<List<InventoryResponse>> transferInventory(@PathVariable Integer warehouseId, @PathVariable Integer destinationId, @RequestBody InventoryRequest request) {
+        try {
+            List<InventoryResponse> response = service.transferInventory(warehouseId, destinationId, request);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().header("error", e.getMessage()).build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().header("error", e.getMessage()).build();
+        }
+    }
+
     // GET all inventory for a warehouse
     @GetMapping
     public ResponseEntity<List<InventoryResponse>> getInventory(@PathVariable Integer warehouseId) {
@@ -78,46 +90,3 @@ public class InventoryController {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-    // // GET all inventory for a warehouse
-    // @GetMapping
-    // public ResponseEntity<List<Inventory>> getInventory(@PathVariable Integer warehouseId) {
-    //     try {
-    //         List<Inventory> inventory = service.findInventoryByWarehouseId(warehouseId);
-    //         return ResponseEntity.ok(inventory);
-    //     } catch (Exception e) {
-    //         return ResponseEntity.internalServerError().header("error", e.getMessage()).build();
-    //     }
-    // }
-
-    // @GetMapping
-    // public ResponseEntity<List<Inventory>> findInventoryByWarehouseId(Integer warehouseId) {
-    //     try {
-    //         List<Inventory> inventory = service.findInventoryByWarehouseId(warehouseId);
-    //         return ResponseEntity.ok(inventory);
-    //     } catch (Exception e) {
-    //         return ResponseEntity.internalServerError().header("error", e.getMessage()).build();
-    //     }
-    // }
-
-    // @GetMapping
-    // public ResponseEntity<List<Inventory>> findInventoryByProductId(Integer productId) {
-    //     try {
-    //         List<Inventory> inventory = service.findInventoryByWarehouseId(productId);
-    //         return ResponseEntity.ok(inventory);
-    //     } catch (Exception e) {
-    //         return ResponseEntity.internalServerError().header("error", e.getMessage()).build();
-    //     }
-    // }
-    
-

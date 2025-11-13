@@ -1,5 +1,6 @@
 package com.project1.backend.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -70,6 +71,54 @@ public class InventoryService {
             inventoryRepository.findByWarehouseId(warehouseId).stream()
                 .map(InventoryMapper::toResponse)
                 .toList();
+        return response;
+    }
+
+    @Transactional
+    public List<InventoryResponse> transferInventory(Integer warehouseId, Integer destinationId, InventoryRequest request) {
+        if (request.quantity() <= 0) {
+            throw new IllegalArgumentException("Transferred quantity must be greater than zero.");
+        }
+        warehouseRepository.findById(warehouseId)
+            .orElseThrow(() -> new NoSuchElementException("Source warehouse not found."));
+        Warehouse destination = warehouseRepository.findById(destinationId)
+            .orElseThrow(() -> new NoSuchElementException("Destination warehouse not found."));
+        Product product = productRepository.findById(request.productId())
+            .orElseThrow(() -> new NoSuchElementException("Product not found."));
+
+        InventoryId sourceInvId = new InventoryId(warehouseId, product.getId());
+        Inventory sourceInv = inventoryRepository.findById(sourceInvId)
+            .orElseThrow(() -> new NoSuchElementException("Inventory entry not found."));
+
+        // check supply of source warehouse
+        if (sourceInv.getQuantity() < request.quantity()) {
+            throw new IllegalArgumentException("Source warehouse has inadequate supply");
+        }
+
+        // check capacity of destination warehouse
+        final int destUsedCapacity = inventoryRepository.getUsedCapacity(destinationId);
+        final int destRemainingCapacity = destination.getCapacity() - destUsedCapacity;
+        if (destRemainingCapacity < request.quantity()) {
+            throw new IllegalArgumentException("Destination warehouse capacity exceeded.");
+        }
+
+        InventoryId destInvId = new InventoryId(destinationId, product.getId());
+        Inventory destInv = inventoryRepository.findById(destInvId)
+            .orElse(new Inventory(destination, product, 0, request.storageLocation()));
+
+        // id needs to be created manually or we get an error
+        if (destInv.getId() == null) {
+            destInv.setId(destInvId);
+        }
+
+        sourceInv.setQuantity(sourceInv.getQuantity() - request.quantity());
+        destInv.setQuantity(destInv.getQuantity() + request.quantity());
+
+        List<InventoryResponse> response = new ArrayList<InventoryResponse>();
+
+        response.add(InventoryMapper.toResponse(inventoryRepository.save(sourceInv)));
+        response.add(InventoryMapper.toResponse(inventoryRepository.save(destInv)));
+
         return response;
     }
 
