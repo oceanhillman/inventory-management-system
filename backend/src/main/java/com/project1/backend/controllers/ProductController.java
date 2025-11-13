@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project1.backend.models.Product;
-import com.project1.backend.models.Warehouse;
+import com.project1.backend.dtos.ProductRequest;
+import com.project1.backend.dtos.ProductResponse;
 import com.project1.backend.services.ProductService;
 
 @RestController
@@ -28,10 +28,10 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest request) {
         try {
-            Product saved = service.createProduct(product);
-            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+            ProductResponse response = service.createProduct(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().header("error", e.getMessage()).build();
         } catch (Exception e) {
@@ -40,20 +40,20 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> findAllProducts() {
+    public ResponseEntity<List<ProductResponse>> findAllProducts() {
         try {
-            List<Product> products = service.findAllProducts();
-            return ResponseEntity.ok(products);
+            List<ProductResponse> response = service.findAllProducts();
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().header("error", e.getMessage()).build();
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> findProductById(@PathVariable Integer id) {
+    public ResponseEntity<ProductResponse> findProductById(@PathVariable Integer id) {
         try {
-            Product product = service.findProductById(id);
-            return ResponseEntity.ok(product);
+            ProductResponse response = service.findProductById(id);
+            return ResponseEntity.ok(response);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().header("error", e.getMessage()).build();
         } catch (Exception e) {
@@ -62,10 +62,10 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Integer id, @RequestBody Product updatedProduct) {
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Integer id, @RequestBody ProductRequest request) {
         try {
-            Product saved = service.updateProduct(id, updatedProduct);
-            return ResponseEntity.ok(saved);
+            ProductResponse response = service.updateProduct(id, request);
+            return ResponseEntity.ok(response);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().header("error", e.getMessage()).build();
         } catch (Exception e) {
