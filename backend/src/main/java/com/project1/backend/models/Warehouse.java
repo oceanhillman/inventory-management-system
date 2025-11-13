@@ -23,14 +23,14 @@ public class Warehouse {
     @Column(nullable = false)
     private String name;
 
-    @Column
+    @Column(nullable = false)
     private String location;
 
     @Column(nullable = false)
     private Integer capacity;
 
-    // @OneToMany(mappedBy = "warehouse")
-    // private Set<InventoryItem> inventory = new HashSet<>();
+    @OneToMany(mappedBy = "warehouse")
+    private Set<Inventory> inventory = new HashSet<>();
 
     public Warehouse() {
     }
@@ -39,7 +39,6 @@ public class Warehouse {
         this.name = name;
         this.location = location;
         this.capacity = capacity;
-        // this.inventory = new HashSet<>();
     }
 
     public Integer getId() {
@@ -74,13 +73,13 @@ public class Warehouse {
         this.capacity = capacity;
     }
 
-    // public Set<InventoryItem> getInventory() {
-    //     return inventory;
-    // }
+    public Set<Inventory> getInventory() {
+        return this.inventory;
+    }
 
-    // public void setInventory(Set<InventoryItem> inventory) {
-    //     this.inventory = inventory;
-    // }
+    public void setInventory(Set<Inventory> inventory) {
+        this.inventory = inventory;
+    }
 
     @Override
     public int hashCode() {

@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project1.backend.models.Warehouse;
+import com.project1.backend.dtos.WarehouseRequest;
+import com.project1.backend.dtos.WarehouseResponse;
 import com.project1.backend.services.WarehouseService;
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -28,10 +29,10 @@ public class WarehouseController {
     }
     
     @PostMapping
-    public ResponseEntity<Warehouse> createWarehouse(@RequestBody Warehouse warehouse) {
+    public ResponseEntity<WarehouseResponse> createWarehouse(@RequestBody WarehouseRequest request) {
         try {
-            Warehouse saved = service.createWarehouse(warehouse);
-            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+            WarehouseResponse response = service.createWarehouse(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().header("error", e.getMessage()).build();
         } catch (Exception e) {
@@ -40,20 +41,20 @@ public class WarehouseController {
     }
     
     @GetMapping
-    public ResponseEntity<List<Warehouse>> findAllWarehouses() {
+    public ResponseEntity<List<WarehouseResponse>> findAllWarehouses() {
         try {
-            List<Warehouse> warehouses = service.findAllWarehouses();
-            return ResponseEntity.ok(warehouses);
+            List<WarehouseResponse> response = service.findAllWarehouses();
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().header("error", e.getMessage()).build();
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Warehouse> findWarehouseById(@PathVariable Integer id) {
+    public ResponseEntity<WarehouseResponse> findWarehouseById(@PathVariable Integer id) {
         try {
-            Warehouse warehouse = service.findWarehouseById(id);
-            return ResponseEntity.ok(warehouse);
+            WarehouseResponse response = service.findWarehouseById(id);
+            return ResponseEntity.ok(response);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().header("error", e.getMessage()).build();
         } catch (Exception e) {
@@ -62,10 +63,10 @@ public class WarehouseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Warehouse> updateWarehouse(@PathVariable Integer id, @RequestBody Warehouse updatedWarehouse) {
+    public ResponseEntity<WarehouseResponse> updateWarehouse(@PathVariable Integer id, @RequestBody WarehouseRequest request) {
         try {
-            Warehouse saved = service.updateWarehouse(id, updatedWarehouse);
-            return ResponseEntity.ok(saved);
+            WarehouseResponse response = service.updateWarehouse(id, request);
+            return ResponseEntity.ok(response);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().header("error", e.getMessage()).build();
         } catch (Exception e) {

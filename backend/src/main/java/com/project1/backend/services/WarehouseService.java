@@ -5,44 +5,63 @@ import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
+import com.project1.backend.dtos.WarehouseRequest;
+import com.project1.backend.dtos.WarehouseResponse;
+import com.project1.backend.mappers.WarehouseMapper;
 import com.project1.backend.models.Warehouse;
 import com.project1.backend.repositories.WarehouseRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class WarehouseService {
     
-    private final WarehouseRepository repository;
-    public WarehouseService(WarehouseRepository repository) {
-        this.repository = repository;
+    private final WarehouseRepository warehouseRepository;
+    public WarehouseService(WarehouseRepository warehouseRepository) {
+        this.warehouseRepository = warehouseRepository;
     }
     
-    public Warehouse createWarehouse(Warehouse warehouse) {
-        return repository.save(warehouse);
+    @Transactional
+    public WarehouseResponse createWarehouse(WarehouseRequest request) {
+        return WarehouseMapper.toResponse(
+            warehouseRepository.save(WarehouseMapper.fromRequest(request))
+        );
     }
 
-    public List<Warehouse> findAllWarehouses() {
-        return repository.findAll();
+    public List<WarehouseResponse> findAllWarehouses() {
+        List<WarehouseResponse> response = 
+            warehouseRepository.findAll().stream()
+                .map(warehouse -> WarehouseMapper.toResponse(warehouse))
+                .toList();
+        return response;
     }
 
-    public Warehouse findWarehouseById(Integer id) throws NoSuchElementException {
-        return repository.findById(id)
-        .orElseThrow(() -> new NoSuchElementException("No warehouse found with that ID."));
+    public WarehouseResponse findWarehouseById(Integer id) {
+        return WarehouseMapper.toResponse(
+            warehouseRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No warehouse found with that ID.")
+            )
+        );
     }
 
-    public Warehouse updateWarehouse(Integer id, Warehouse updatedWarehouse) throws NoSuchElementException {
-        return repository.findById(id)
-        .map(outdatedWarehouse -> {
-            outdatedWarehouse.setName(updatedWarehouse.getName());
-            outdatedWarehouse.setLocation(updatedWarehouse.getLocation());
-            outdatedWarehouse.setCapacity(updatedWarehouse.getCapacity());
-            return repository.save(outdatedWarehouse);
-        }).orElseThrow(() -> new NoSuchElementException("No warehouse found with that ID."));
+    @Transactional
+    public WarehouseResponse updateWarehouse(Integer id, WarehouseRequest request) {
+
+        Warehouse warehouse = warehouseRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("No warehouse found with that ID."));
+
+        warehouse.setName(request.name());
+        warehouse.setLocation(request.location());
+        warehouse.setCapacity(request.capacity());
+
+        return WarehouseMapper.toResponse(warehouseRepository.save(warehouse));
     }
 
+    @Transactional
     public void deleteWarehouse(Integer id) {
-        Warehouse warehouse = repository.findById(id)
-        .orElseThrow(() -> new NoSuchElementException("No warehouse found with that ID."));
+        Warehouse warehouse = warehouseRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("No warehouse found with that ID."));
 
-        repository.delete(warehouse);
+        warehouseRepository.delete(warehouse);
     }
 }
