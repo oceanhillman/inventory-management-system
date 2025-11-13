@@ -20,6 +20,9 @@ public class Product {
     private Integer id;
 
     @Column(nullable = false)
+    private String sku;
+
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
@@ -35,11 +38,20 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, String description, Category category, Double price) {
+    public Product(String sku, String name, String description, Category category, Double price) {
+        this.sku = sku;
         this.name = name;
         this.description = description;
         this.category = category;
         this.price = price;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 
     public Integer getId() {
@@ -87,6 +99,7 @@ public class Product {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((sku == null) ? 0 : sku.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + ((category == null) ? 0 : category.hashCode());
@@ -107,6 +120,11 @@ public class Product {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
+            return false;
+        if (sku == null) {
+            if (other.sku != null)
+                return false;
+        } else if (!sku.equals(other.sku))
             return false;
         if (name == null) {
             if (other.name != null)
@@ -133,8 +151,8 @@ public class Product {
 
     @Override
     public String toString() {
-        return "Product [id=" + id + ", name=" + name + ", description=" + description + ", category=" + category
-                + ", price=" + price + "]";
+        return "Product [id=" + id + ", sku=" + sku + ", name=" + name + ", description=" + description + ", category="
+                + category + ", price=" + price + "]";
     }
 
 }
