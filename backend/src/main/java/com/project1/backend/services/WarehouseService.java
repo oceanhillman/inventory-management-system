@@ -31,7 +31,7 @@ public class WarehouseService {
     public List<WarehouseResponse> findAllWarehouses() {
         List<WarehouseResponse> response = 
             warehouseRepository.findAll().stream()
-                .map(warehouse -> WarehouseMapper.toResponse(warehouse))
+                .map(WarehouseMapper::toResponse)
                 .toList();
         return response;
     }

@@ -39,7 +39,7 @@ public class ProductService {
 
     public List<ProductResponse> findAllProducts() {
         return productRepository.findAll().stream()
-            .map(product -> ProductMapper.toResponse(product)).toList();
+            .map(ProductMapper::toResponse).toList();
     }
 
     public ProductResponse findProductById(Integer id) {
@@ -70,7 +70,7 @@ public class ProductService {
     @Transactional
     public void deleteProduct(Integer id) {
         Product product = productRepository.findById(id)
-        .orElseThrow(() -> new NoSuchElementException("No product found with that ID."));
+            .orElseThrow(() -> new NoSuchElementException("No product found with that ID."));
 
         productRepository.delete(product);
     }

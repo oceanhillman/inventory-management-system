@@ -1,10 +1,13 @@
 package com.project1.backend.services;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
 import com.project1.backend.dtos.InventoryRequest;
+import com.project1.backend.dtos.InventoryResponse;
+import com.project1.backend.mappers.InventoryMapper;
 import com.project1.backend.models.Inventory;
 import com.project1.backend.models.InventoryId;
 import com.project1.backend.models.Product;
@@ -31,7 +34,7 @@ public class InventoryService {
     }
 
     @Transactional
-    public Inventory addInventory(Integer warehouseId, InventoryRequest request) {
+    public InventoryResponse addInventory(Integer warehouseId, InventoryRequest request) {
         Warehouse warehouse = warehouseRepository.findById(warehouseId)
             .orElseThrow(() -> new NoSuchElementException("Warehouse not found."));
         Product product = productRepository.findById(request.productId())
@@ -47,17 +50,38 @@ public class InventoryService {
         }
 
         inventory.setQuantity(inventory.getQuantity() + request.quantity());
-        return inventoryRepository.save(inventory);
+        return InventoryMapper.toResponse(inventoryRepository.save(inventory));
+    }
+
+    public List<InventoryResponse> findInventoryByWarehouseId(Integer warehouseId) {
+        warehouseRepository.findById(warehouseId)
+            .orElseThrow(() -> new NoSuchElementException("Warehouse not found."));
+
+        List<InventoryResponse> response = 
+            inventoryRepository.findByWarehouseId(warehouseId).stream()
+                .map(InventoryMapper::toResponse)
+                .toList();
+        return response;
     }
 
     @Transactional
-    public Inventory updateQuantity(Integer warehouseId, InventoryRequest request) {
+    public InventoryResponse updateQuantity(Integer warehouseId, InventoryRequest request) {
         InventoryId id = new InventoryId(warehouseId, request.productId());
 
         Inventory inventory = inventoryRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("Inventory entry not found."));
 
         inventory.setQuantity(request.quantity());
-        return inventoryRepository.save(inventory);
-    }   
+        return InventoryMapper.toResponse(inventoryRepository.save(inventory));
+    }
+
+    @Transactional
+    public void deleteInventory(Integer warehouseId, Integer productId) {
+        InventoryId id = new InventoryId(warehouseId, productId);
+
+        Inventory inventory = inventoryRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Inventory entry not found."));
+
+        inventoryRepository.delete(inventory);
+    }
 }
