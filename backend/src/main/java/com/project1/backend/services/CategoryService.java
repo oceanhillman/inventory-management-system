@@ -11,40 +11,41 @@ import com.project1.backend.repositories.CategoryRepository;
 @Service
 public class CategoryService {
     
-    private final CategoryRepository repository;
-    public CategoryService(CategoryRepository repository) {
-        this.repository = repository;
+    private final CategoryRepository categoryRepository;
+    public CategoryService(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
 
-    public Category createCategory(Category category) {
-        if (category.getName() == null || category.getName().isBlank()) {
+    public Category createCategory(String request) {
+        if (request == null || request.isBlank()) {
             throw new IllegalArgumentException("Category name cannot be empty.");
         }
-        return repository.save(category);
+
+        return categoryRepository.save(new Category(request));
     }
 
     public List<Category> findAllCategories() {
-        return repository.findAll();
+        return categoryRepository.findAll();
     }
 
     public Category findCategoryById(Integer id) {
-        return repository.findById(id)
-        .orElseThrow(() -> new NoSuchElementException("No category found with that ID."));
+        return categoryRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("No category found with that ID."));
     }
 
-    public Category updateCategory(Integer id, Category updatedCategory) {
-        return repository.findById(id)
-        .map(outdatedCategory -> {
-            outdatedCategory.setName(updatedCategory.getName());
-            return repository.save(outdatedCategory);
+    public Category updateCategory(Integer id, String name) {
+        return categoryRepository.findById(id)
+        .map(category -> {
+            category.setName(name);
+            return categoryRepository.save(category);
         })
         .orElseThrow(() -> new NoSuchElementException("No category found with that ID."));
     }
 
     public void deleteCategory(Integer id) {
-        Category category = repository.findById(id)
-        .orElseThrow(() -> new NoSuchElementException("No category found with that ID."));
+        Category category = categoryRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("No category found with that ID."));
 
-        repository.delete(category);
+        categoryRepository.delete(category);
     }
 }

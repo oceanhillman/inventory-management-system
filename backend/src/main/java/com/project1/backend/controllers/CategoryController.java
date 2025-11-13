@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project1.backend.dtos.CategoryDTO;
 import com.project1.backend.models.Category;
 import com.project1.backend.services.CategoryService;
 
@@ -28,11 +27,9 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody CategoryDTO dto) {
+    public ResponseEntity<Category> createCategory(@RequestBody String request) {
         try {
-            Category category = new Category();
-            category.setName(dto.getName());
-            Category saved = service.createCategory(category);
+            Category saved = service.createCategory(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(saved);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().header("error", e.getMessage()).build();
@@ -64,11 +61,9 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Integer id, @RequestBody CategoryDTO dto) {
+    public ResponseEntity<Category> updateCategory(@PathVariable Integer id, @RequestBody String request) {
         try {
-            Category category = new Category();
-            category.setName(dto.getName());
-            Category saved = service.updateCategory(id, category);
+            Category saved = service.updateCategory(id, request);
             return ResponseEntity.ok(saved);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().header("error", e.getMessage()).build();
