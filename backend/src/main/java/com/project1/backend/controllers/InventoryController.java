@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -19,6 +20,7 @@ import com.project1.backend.dtos.InventoryResponse;
 import com.project1.backend.services.InventoryService;
 
 @RestController
+@CrossOrigin(origins = "${FRONTEND_URL}")
 @RequestMapping("/warehouses/{warehouseId}/inventory")
 public class InventoryController {
     

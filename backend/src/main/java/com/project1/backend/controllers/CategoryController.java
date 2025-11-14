@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import com.project1.backend.models.Category;
 import com.project1.backend.services.CategoryService;
 
 @RestController
+@CrossOrigin(origins = "${FRONTEND_URL}")
 @RequestMapping("/categories")
 public class CategoryController {
     
