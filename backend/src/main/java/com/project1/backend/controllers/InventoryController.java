@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,6 +72,19 @@ public class InventoryController {
     public ResponseEntity<InventoryResponse> updateQuantity(@PathVariable Integer warehouseId, @RequestBody InventoryRequest request) {
         try {
             InventoryResponse response = service.updateQuantity(warehouseId, request);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().header("error", e.getMessage()).build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().header("error", e.getMessage()).build();
+        }
+    }
+
+    // PUT inventory entry
+    @PutMapping
+    public ResponseEntity<InventoryResponse> updateInventory(@PathVariable Integer warehouseId, @RequestBody InventoryRequest request) {
+        try {
+            InventoryResponse response = service.updateInventory(warehouseId, request);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().header("error", e.getMessage()).build();

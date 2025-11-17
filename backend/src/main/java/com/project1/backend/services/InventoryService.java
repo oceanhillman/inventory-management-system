@@ -145,6 +145,29 @@ public class InventoryService {
     }
 
     @Transactional
+    public InventoryResponse updateInventory(Integer warehouseId, InventoryRequest request) {
+        InventoryId id = new InventoryId(warehouseId, request.productId());
+
+        Warehouse warehouse = warehouseRepository.findById(warehouseId)
+            .orElseThrow(() -> new NoSuchElementException("Warehouse not found."));
+        Inventory inventory = inventoryRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Inventory entry not found."));
+
+        // subtract the existing quantity value so we don't double-count
+        final int usedCapacity = inventoryRepository.getUsedCapacity(warehouseId) - inventory.getQuantity();
+        final int remainingCapacity = warehouse.getCapacity() - usedCapacity;
+
+        // check capacity
+        if (remainingCapacity < request.quantity()) {
+            throw new IllegalArgumentException("Warehouse capacity exceeded.");
+        }
+
+        inventory.setQuantity(request.quantity());
+        inventory.setStorageLocation(request.storageLocation());
+        return InventoryMapper.toResponse(inventoryRepository.save(inventory));
+    }
+
+    @Transactional
     public void deleteInventory(Integer warehouseId, Integer productId) {
         InventoryId id = new InventoryId(warehouseId, productId);
 
