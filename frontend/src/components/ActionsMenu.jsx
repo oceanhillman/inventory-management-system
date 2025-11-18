@@ -18,7 +18,7 @@ const ActionsMenu = ({ data, actions }) => {
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger>...</DropdownMenuTrigger>
+            <DropdownMenuTrigger onClick={(e) => e.stopPropagation()} className="cursor-pointer px-2">...</DropdownMenuTrigger>
 
             <DropdownMenuContent className="text-neutral-50 bg-neutral-700">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
@@ -26,8 +26,12 @@ const ActionsMenu = ({ data, actions }) => {
                 {actions.map((item, index) => {
                     return(
                         <DropdownMenuItem 
-                        key={item.title + data[index]}
-                        onClick={() => item.action(data[index])}
+                        key={item.title}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            item.action(data[index]);
+                            }
+                        }
                         className="cursor-pointer"
                         >
                         {item.title}

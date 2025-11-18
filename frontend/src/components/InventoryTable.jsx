@@ -112,7 +112,7 @@ const InventoryTable = ({ warehouse, onChangeView, onSaveChanges }) => {
                         >
                         </input>
                     </TableCell>
-                    <TableCell className="text-right pr-7">
+                    <TableCell className="text-right pr-5">
                         <ActionsMenu 
                             data={row}
                             actions={inventoryActions}
@@ -131,14 +131,17 @@ const InventoryTable = ({ warehouse, onChangeView, onSaveChanges }) => {
 
         </Table>
         <div className="flex flex-row justify-between">
-            <Button onClick={() => onChangeView('warehouses')} className="bg-neutral-100">
+            <Button onClick={() => onChangeView('warehouses')} className="bg-neutral-100 cursor-pointer">
             Back to warehouses
             </Button>
             {unsavedChanges ? 
-                <Button onClick={() => handleClickSave()} className="bg-neutral-100">
+                <Button onClick={() => handleClickSave()} className="bg-neutral-100 cursor-pointer">
                 Save changes
                 </Button>
             : null}
+            <Button onClick={() => onChangeView('products')} className="bg-neutral-100 cursor-pointer">
+            Add new inventory
+            </Button>
         </div>
         </>
     );

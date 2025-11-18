@@ -5,11 +5,15 @@ import { Button } from './components/ui/button'
 
 import WarehouseTable from './components/WarehouseTable'
 import InventoryTable from './components/InventoryTable'
+import ProductsTable from './components/ProductsTable'
 
-import { getWarehouses, updateInventory } from './lib/api'
+import { getWarehouses, updateInventory, deleteWarehouse, createWarehouse, getProducts, addInventory,
+    getWarehouseById, createProduct
+ } from './lib/api'
 
 function App() {
     const [warehouses, setWarehouses] = useState(null);
+    const [products, setProducts] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [view, setView] = useState("warehouses");
@@ -21,6 +25,15 @@ function App() {
             .then(response => setWarehouses(response))
             .finally(() => setLoading(false));
     }, []);
+
+    useEffect(() => {
+        getProducts()
+            .then(response => setProducts(response));
+        if (selectedWarehouse) {
+            getWarehouseById(selectedWarehouse.id)
+                .then(response => setSelectedWarehouse(response));
+        }
+    }, [warehouses])
 
     const fetchUpdateInventory = (changes) => {
         const patchRequests = changes.map((change) => {
@@ -46,6 +59,38 @@ function App() {
         });
     };
 
+    const fetchDeleteWarehouse = (id) => {
+        deleteWarehouse(id)
+        .then(() => {
+            getWarehouses()
+            .then(response => setWarehouses(response));
+        });
+    }
+
+    const fetchCreateWarehouse = (body) => {
+        createWarehouse(body)
+        .then(() => {
+            getWarehouses()
+            .then(response => setWarehouses(response));
+        });
+    }
+
+    const fetchAddInventory = (body) => {
+        addInventory(body)
+        .then(() => {
+            getWarehouses()
+            .then(response => setWarehouses(response));
+        });
+    }
+
+    const fetchCreateProduct = (body) => {
+        createProduct(body)
+        .then(() => {
+            getWarehouses()
+            .then(response => setWarehouses(response));
+        });
+    }
+
     const RenderView = () => {
         if (view === "warehouses") {
             return (
@@ -53,6 +98,8 @@ function App() {
                     data={warehouses}
                     onChangeView={(view) => setView(view)}
                     onSelectWarehouse={(warehouse) => setSelectedWarehouse(warehouse)}
+                    handleDeleteWarehouse={(id) => fetchDeleteWarehouse(id)}
+                    handleCreateWarehouse={(body) => fetchCreateWarehouse(body)}
                 />
             )
         } else if (view === "inventory") {
@@ -60,7 +107,17 @@ function App() {
                 <InventoryTable
                     warehouse={selectedWarehouse}
                     onChangeView={(view) => setView(view)}
-                    onSaveChanges={(changes) => fetchUpdateInventory(changes)}
+                    onSaveChanges={(changes) => fetchUpdateInventory(changes)}  
+                />
+            )
+        } else if (view === "products") {
+            return (
+                <ProductsTable
+                    data={products}
+                    warehouse={selectedWarehouse}
+                    onChangeView={(view) => setView(view)}
+                    handleAddInventory={(body) => fetchAddInventory(body)}
+                    handleCreateProduct={(body) => fetchCreateProduct(body)}
                 />
             )
         }
@@ -71,7 +128,7 @@ function App() {
 
     return (
         <>
-            <div className="flex min-h-svh flex-col items-center justify-center bg-neutral-800">
+            <div className="flex min-h-svh flex-col items-center justify-center bg-neutral-900">
                 <div className="w-5/6">
                 <p>{message}</p>
                     <RenderView />
