@@ -21,8 +21,6 @@ const ActionsMenu = ({ data, actions }) => {
             <DropdownMenuTrigger onClick={(e) => e.stopPropagation()} className="cursor-pointer px-2">...</DropdownMenuTrigger>
 
             <DropdownMenuContent className="text-neutral-50 bg-neutral-700">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-neutral-500" />
                 {actions.map((item, index) => {
                     return(
                         <DropdownMenuItem 
@@ -32,7 +30,7 @@ const ActionsMenu = ({ data, actions }) => {
                             item.action(data[index]);
                             }
                         }
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:bg-neutral-600"
                         >
                         {item.title}
                         </DropdownMenuItem>

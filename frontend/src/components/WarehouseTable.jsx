@@ -14,20 +14,26 @@ import { Button } from '@/components/ui/button'
 import ActionsMenu from "@/components/ActionsMenu"
 import CreateWarehouseModal from "@/components/CreateWarehouseModal"
 import DeleteWarehouseModal from "@/components/DeleteWarehouseModal"
+import EditWarehouseModal from "@/components/EditWarehouseModal"
 
-const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWarehouse, handleCreateWarehouse }) => {
+const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWarehouse, handleCreateWarehouse,
+    handleEditWarehouse }) => {
 
     const [createDialogIsOpen, setCreateDialogIsOpen] = useState(false);
     const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState(false);
-    const [warehouseToDelete, setWarehouseToDelete] = useState(null);
+    const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
+    const [selectedWarehouse, setSelectedWarehouse] = useState(null);
 
     const warehouseActions = [
         {title:"View inventory", action: (warehouse) => {handleClickViewInventory(warehouse)}},
-        {title:"Edit", action: () => {}},
+        {title:"Edit", action: (warehouse) => {
+            setSelectedWarehouse(warehouse);
+            setEditDialogIsOpen(true);
+        }},
         {title:"Delete", action: (warehouse) => {
-            setWarehouseToDelete(warehouse);
-            setDeleteDialogIsOpen(true)}
-        }
+            setSelectedWarehouse(warehouse);
+            setDeleteDialogIsOpen(true);
+        }}
     ];
     
     const handleClickViewInventory = (warehouse) => {
@@ -35,9 +41,14 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
         onChangeView("inventory");
     }
 
-    const onSubmit = (body) => {
+    const handleSubmitCreate = (body) => {
         setCreateDialogIsOpen(false);
         handleCreateWarehouse(body);
+    }
+
+    const handleSubmitEdit = (id, body) => {
+        setEditDialogIsOpen(false);
+        handleEditWarehouse(id, body);
     }
 
     return (
@@ -55,7 +66,7 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
 
                 <TableBody>
                     {data.map((row) => (
-                    <TableRow key={row.id} onClick={() => handleClickViewInventory(row)} className="hover:bg-neutral-500 cursor-pointer">
+                    <TableRow key={row.id} onClick={() => handleClickViewInventory(row)} className="hover:bg-neutral-600 cursor-pointer">
                         <TableCell className="font-medium">{row.name}</TableCell>
                         <TableCell>
                             {row.location}</TableCell>
@@ -79,17 +90,23 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
             <DeleteWarehouseModal
                 open={deleteDialogIsOpen}
                 setOpen={setDeleteDialogIsOpen}
-                warehouseName={warehouseToDelete?.name}
+                warehouseName={selectedWarehouse?.name}
                 onDelete={() => {
-                    handleDeleteWarehouse(warehouseToDelete?.id);
+                    handleDeleteWarehouse(selectedWarehouse?.id);
                     setDeleteDialogIsOpen(false);
-                    setWarehouseToDelete(null);
+                    setSelectedWarehouse(null);
                 }}
             />
             <CreateWarehouseModal 
                 open={createDialogIsOpen}
                 setOpen={setCreateDialogIsOpen}
-                onSubmit={(body) => onSubmit(body)}
+                onSubmit={(body) => handleSubmitCreate(body)}
+            />
+            <EditWarehouseModal
+                open={editDialogIsOpen}
+                setOpen={setEditDialogIsOpen}
+                onSubmit={(id, body) => handleSubmitEdit(id, body)}
+                warehouse={selectedWarehouse}
             />
         </>
     );

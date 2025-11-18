@@ -8,7 +8,7 @@ import InventoryTable from './components/InventoryTable'
 import ProductsTable from './components/ProductsTable'
 
 import { getWarehouses, updateInventory, deleteWarehouse, createWarehouse, getProducts, addInventory,
-    getWarehouseById, createProduct
+    getWarehouseById, createProduct, editWarehouse
  } from './lib/api'
 
 function App() {
@@ -91,6 +91,14 @@ function App() {
         });
     }
 
+    const fetchEditWarehouse = (id, body) => {
+        editWarehouse(id, body)
+        .then(() => {
+            getWarehouses()
+            .then(response => setWarehouses(response));
+        });
+    }
+
     const RenderView = () => {
         if (view === "warehouses") {
             return (
@@ -100,6 +108,7 @@ function App() {
                     onSelectWarehouse={(warehouse) => setSelectedWarehouse(warehouse)}
                     handleDeleteWarehouse={(id) => fetchDeleteWarehouse(id)}
                     handleCreateWarehouse={(body) => fetchCreateWarehouse(body)}
+                    handleEditWarehouse={(id, body) => fetchEditWarehouse(id, body)}
                 />
             )
         } else if (view === "inventory") {

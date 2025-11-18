@@ -6,3 +6,4 @@ export { default as getProducts } from './getProducts';
 export { default as addInventory } from './addInventory';
 export { default as getWarehouseById } from './getWarehouseById';
 export { default as createProduct } from './createProduct';
+export { default as editWarehouse } from './editWarehouse';

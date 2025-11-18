@@ -32,14 +32,14 @@ const InventoryTable = ({ warehouse, onChangeView, onSaveChanges }) => {
     }
 
     const updateStorageLocation = (val, index) => {
-        let items = [...inventory];
+        let items = cloneDeep(inventory);
         items[index].storageLocation = String(val);
         setInventory(items);
         setUnsavedChanges(true);
     }
 
     const updateQuantity = (val, index) => {
-        let items = [...inventory];
+        let items = cloneDeep(inventory);
         items[index].quantity = Number(val);
         setInventory(items);
         setUnsavedChanges(true);
@@ -47,7 +47,7 @@ const InventoryTable = ({ warehouse, onChangeView, onSaveChanges }) => {
 
     const incrementQuantity = (e, index) => {
         e.preventDefault();
-        let items = [...inventory];
+        let items = cloneDeep(inventory);
         items[index].quantity = items[index].quantity + 1;
         setInventory(items);
         setUnsavedChanges(true);
@@ -55,7 +55,7 @@ const InventoryTable = ({ warehouse, onChangeView, onSaveChanges }) => {
 
     const decrementQuantity = (e, index) => {
         e.preventDefault();
-        let items = [...inventory];
+        let items = cloneDeep(inventory);
         items[index].quantity = items[index].quantity - 1;
         setInventory(items);
         setUnsavedChanges(true);
