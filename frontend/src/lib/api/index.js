@@ -10,3 +10,5 @@ export { default as editWarehouse } from './editWarehouse';
 export { default as getProductById } from './getProductById';
 export { default as deleteInventory } from './deleteInventory';
 export { default as editProduct } from './editProduct';
+export { default as deleteProduct } from './deleteProduct';
+export { default as transferInventory } from './transferInventory';

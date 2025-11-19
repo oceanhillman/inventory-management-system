@@ -1,10 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
@@ -12,13 +10,14 @@ import {
 import { Button } from '@/components/ui/button'
 
 import ActionsMenu from "@/components/ActionsMenu"
-import CreateWarehouseModal from "@/components/CreateWarehouseModal"
-import DeleteWarehouseModal from "@/components/DeleteWarehouseModal"
 import CreateProductModal from './CreateProductModal'
 import AddInventoryModal from './AddInventoryModal'
 import EditProductModal from './EditProductModal'
+import DeleteProductModal from './DeleteProductModal'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 
-const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, handleCreateProduct, handleEditProduct }) => {
+const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, handleCreateProduct, handleEditProduct,
+    handleDeleteProduct }) => {
 
     const [createDialogIsOpen, setCreateDialogIsOpen] = useState(false);
     const [addDialogIsOpen, setAddDialogIsOpen] = useState(false);
@@ -26,13 +25,37 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
     const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
 
+    const [sortedBy, setSortedBy] = useState("sku");
+    const [sortMethod, setSortMethod] = useState("ascending");
+    const [sortedData, setSortedData] = useState([]);
+
+    useEffect(() => {
+        setSortedData([...data].sort((a, b) => {
+            const fieldA = a[sortedBy];
+            const fieldB = b[sortedBy];
+
+            if (fieldA < fieldB) return sortMethod === "ascending" ? -1 : 1;
+            if (fieldA > fieldB) return sortMethod === "ascending" ? 1 : -1;
+            return 0;
+        }));
+    }, [sortedBy, sortMethod, data]);
+
+    const renderChevron = (field) => {
+        if (sortedBy === field) {
+            return sortMethod === "ascending" ? <ChevronUp /> : <ChevronDown />;
+        }
+    };
+
     const productActions = [
         {title:"Add to inventory", action: (product) => addInventory(product)},
         {title:"Edit product details", action: (product) => {
             setSelectedProduct(product);
             setEditDialogIsOpen(true);
         }},
-        {title:"Delete", action: () => {}}
+        {title:"Delete", action: (product) => {
+            setSelectedProduct(product);
+            setDeleteDialogIsOpen(true);
+        }}
     ];
 
     const addInventory = (product) => {
@@ -50,11 +73,10 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
         handleCreateProduct(body);
     }
 
-      const onEditProduct = (id, body) => {
+    const onEditProduct = (id, body) => {
         setEditDialogIsOpen(false);
         handleEditProduct(id, body);
     }
-
 
     return (
         <>  
@@ -66,27 +88,71 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
                 <Button onClick={() => onChangeView('inventory')} className="bg-neutral-100 cursor-pointer">
                 Back to inventory
                 </Button>
-
                 <Button onClick={setCreateDialogIsOpen} className="bg-neutral-100 cursor-pointer">
                 Add new product
                 </Button>
             </div>
 
             <Table className="bg-neutral-700 text-neutral-200 shadow">
-                
                 <TableHeader className="bg-neutral-800 text-neutral-100">
                     <TableRow>
-                        <TableHead>SKU</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead className="text-center">Description</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Price</TableHead>
+
+                        <TableHead onClick={() => {
+                            if (sortedBy === "sku") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
+                            setSortedBy("sku");
+                        }} className="cursor-pointer">
+                            <div className="flex items-center gap-1">
+                                SKU
+                                {renderChevron("sku")}
+                            </div>
+                        </TableHead>
+
+                        <TableHead onClick={() => {
+                            if (sortedBy === "name") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
+                            setSortedBy("name");
+                        }} className="cursor-pointer">
+                            <div className="flex items-center gap-1">
+                                Name
+                                {renderChevron("name")}
+                            </div>
+                        </TableHead>
+
+                        <TableHead onClick={() => {
+                            if (sortedBy === "description") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
+                            setSortedBy("description");
+                        }} className="cursor-pointer text-center">
+                            <div className="flex items-center justify-center gap-1">
+                                Description
+                                {renderChevron("description")}
+                            </div>
+                        </TableHead>
+
+                        <TableHead onClick={() => {
+                            if (sortedBy === "category") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
+                            setSortedBy("category");
+                        }} className="cursor-pointer">
+                            <div className="flex items-center gap-1">
+                                Category
+                                {renderChevron("category")}
+                            </div>
+                        </TableHead>
+
+                        <TableHead onClick={() => {
+                            if (sortedBy === "price") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
+                            setSortedBy("price");
+                        }} className="cursor-pointer">
+                            <div className="flex items-center gap-1">
+                                Price
+                                {renderChevron("price")}
+                            </div>
+                        </TableHead>
+
                         <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
 
                 <TableBody>
-                    {data.map((row) => (
+                    {sortedData.map((row) => (
                     <TableRow key={row.id} onClick={() => addInventory(row)} 
                     className="hover:bg-neutral-600 cursor-pointer border-neutral-500 border-1">
                         <TableCell className="font-medium">{row.sku}</TableCell>
@@ -103,7 +169,6 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
                     </TableRow>
                     ))}
                 </TableBody>
-
             </Table>
             
             <CreateProductModal
@@ -122,6 +187,16 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
                 open={editDialogIsOpen}
                 setOpen={setEditDialogIsOpen}
                 onSubmit={(id, body) => onEditProduct(id, body)}
+                product={selectedProduct}
+            />
+            <DeleteProductModal
+                open={deleteDialogIsOpen}
+                setOpen={setDeleteDialogIsOpen}
+                onDelete={() => {
+                    handleDeleteProduct(selectedProduct?.id);
+                    setDeleteDialogIsOpen(false);
+                    setSelectedProduct(null);
+                }}
                 product={selectedProduct}
             />
         </>

@@ -17,7 +17,7 @@ import ActionsMenu from "@/components/ActionsMenu"
 import ProductDetailsModal from "@/components/ProductDetailsModal"
 import DeleteInventoryModal from "@/components/DeleteInventoryModal"
 import TransferInventoryModal from "@/components/TransferInventoryModal"
-
+import { ChevronDown, ChevronUp } from "lucide-react"
 
 const InventoryTable = ({ warehouse, warehouses, onChangeView, onSaveChanges, handleDeleteInventory, handleTransferInventory }) => {
 
@@ -30,7 +30,28 @@ const InventoryTable = ({ warehouse, warehouses, onChangeView, onSaveChanges, ha
 
     const originalRef = useRef(cloneDeep(warehouse.inventory));
 
-        const inventoryActions = [
+    const [sortedBy, setSortedBy] = useState("productName");
+    const [sortMethod, setSortMethod] = useState("ascending");
+    const [sortedData, setSortedData] = useState([]);
+
+    useEffect(() => {
+        setSortedData([...inventory].sort((a, b) => {
+            const fieldA = a[sortedBy];
+            const fieldB = b[sortedBy];
+
+            if (fieldA < fieldB) return sortMethod === "ascending" ? -1 : 1;
+            if (fieldA > fieldB) return sortMethod === "ascending" ? 1 : -1;
+            return 0;
+        }));
+    }, [sortedBy, sortMethod, inventory]);
+
+    const renderChevron = (field) => {
+        if (sortedBy === field) {
+            return sortMethod === "ascending" ? <ChevronUp /> : <ChevronDown />;
+        }
+    };
+
+    const inventoryActions = [
         {title:"View product details", action: (inventory) => {
             setSelectedInventory(inventory);
             setDetailsDialogIsOpen(true);
@@ -45,109 +66,163 @@ const InventoryTable = ({ warehouse, warehouses, onChangeView, onSaveChanges, ha
         }},
     ];
 
+    const onTransfer = (source, dest, body) => {
+        handleTransferInventory(source, dest, body);
+        setTransferDialogIsOpen(false);
+    };
 
     const handleClickSave = () => {
         const changes = inventory.filter((item, index) => {
             return !isEqual(item, originalRef.current[index]);
         });
-        
         onSaveChanges(changes);
-    }
+    };
 
-    const updateStorageLocation = (val, index) => {
-        let items = cloneDeep(inventory);
-        items[index].storageLocation = String(val);
-        setInventory(items);
-        setUnsavedChanges(true);
-    }
+    const updateQuantity = (val, productId) => {
+    const items = cloneDeep(inventory);
+    const item = items.find(i => i.productId === productId);
+    if (item) item.quantity = Number(val);
+    setInventory(items);
+    setUnsavedChanges(true);
+};
 
-    const updateQuantity = (val, index) => {
-        let items = cloneDeep(inventory);
-        items[index].quantity = Number(val);
-        setInventory(items);
-        setUnsavedChanges(true);
-    }
+const updateStorageLocation = (val, productId) => {
+    const items = cloneDeep(inventory);
+    const item = items.find(i => i.productId === productId);
+    if (item) item.storageLocation = String(val);
+    setInventory(items);
+    setUnsavedChanges(true);
+};
 
-    const incrementQuantity = (e, index) => {
-        e.preventDefault();
-        let items = cloneDeep(inventory);
-        items[index].quantity = items[index].quantity + 1;
-        setInventory(items);
-        setUnsavedChanges(true);
-    }
+const incrementQuantity = (e, productId) => {
+    e.preventDefault();
+    const items = cloneDeep(inventory);
+    const item = items.find(i => i.productId === productId);
+    if (item) item.quantity += 1;
+    setInventory(items);
+    setUnsavedChanges(true);
+};
 
-    const decrementQuantity = (e, index) => {
-        e.preventDefault();
-        let items = cloneDeep(inventory);
-        items[index].quantity = items[index].quantity - 1;
-        setInventory(items);
-        setUnsavedChanges(true);
-    }
+const decrementQuantity = (e, productId) => {
+    e.preventDefault();
+    const items = cloneDeep(inventory);
+    const item = items.find(i => i.productId === productId);
+    if (item) item.quantity -= 1;
+    setInventory(items);
+    setUnsavedChanges(true);
+};
+
 
     return (<>
         <div className="flex flex-col items-center justify-center p-4">
-                <h1 className="text-neutral-50 text-2xl font-bold">Inventory</h1>
-                <h2 className="text-neutral-500 text-xl font-bold">{warehouse.name}</h2>
+            <h1 className="text-neutral-50 text-2xl font-bold">Inventory</h1>
+            <h2 className="text-neutral-500 text-xl font-bold">{warehouse.name}</h2>
         </div>
+
         <div className="flex flex-row justify-between p-4">
             <Button onClick={() => onChangeView('warehouses')} className="bg-neutral-100 cursor-pointer">
-            Back to warehouses
+                Back to warehouses
             </Button>
-            {unsavedChanges ? 
-                <Button onClick={() => handleClickSave()} className="bg-neutral-100 cursor-pointer">
-                Save changes
+
+            {unsavedChanges && (
+                <Button onClick={handleClickSave} className="bg-neutral-100 cursor-pointer">
+                    Save changes
                 </Button>
-            : null}
+            )}
+
             <Button onClick={() => onChangeView('products')} className="bg-neutral-100 cursor-pointer">
-            Add new inventory
+                View all products
             </Button>
         </div>
         
         <Table className="bg-neutral-700 text-neutral-200 shadow">
-        
             <TableHeader className="bg-neutral-800 text-neutral-100">
                 <TableRow>
-                    <TableHead>Product Name</TableHead>
-                    <TableHead className="text-center">Quantity</TableHead>
-                    <TableHead className="text-left">Storage Location</TableHead>
+                    <TableHead 
+                        onClick={() => {
+                            if (sortedBy === "productName") {
+                                setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
+                            }
+                            setSortedBy("productName");
+                        }}
+                        className="cursor-pointer"
+                    >
+                        <div className="flex flex-row items-center">
+                            Product Name
+                            {renderChevron("productName")}
+                        </div>
+                    </TableHead>
+
+                    {/* ⭐ Quantity sorting */}
+                    <TableHead 
+                        onClick={() => {
+                            if (sortedBy === "quantity") {
+                                setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
+                            }
+                            setSortedBy("quantity");
+                        }}
+                        className="cursor-pointer text-center"
+                    >
+                        <div className="flex flex-row items-center justify-center">
+                            Quantity
+                            {renderChevron("quantity")}
+                        </div>
+                    </TableHead>
+
+                    <TableHead 
+                        onClick={() => {
+                            if (sortedBy === "storageLocation") {
+                                setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
+                            }
+                            setSortedBy("storageLocation");
+                        }}
+                        className="cursor-pointer text-left"
+                    >
+                        <div className="flex flex-row items-center">
+                            Storage Location
+                            {renderChevron("storageLocation")}
+                        </div>
+                    </TableHead>
+
                     <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
             </TableHeader>
 
             <TableBody className="border-neutral-500">
-                {inventory.map((row, index) => (
-                <TableRow key={'w' + row.warehouseId + 'p' + row.productId} className="border-1 border-neutral-500">
-                    <TableCell className="font-medium">{row.productName}</TableCell>
-                    <TableCell className="text-center">
-                        <span onMouseDown = {(e) => decrementQuantity(e, index)} className="cursor-pointer px-1">
-                            -
-                        </span>
-                        <input
-                        className="w-8 text-center text-neutral-50 placeholder-neutral-50 border-1 border-neutral-500 rounded"
-                        type="text" 
-                        value={inventory[index].quantity}
-                        onChange={(e) => updateQuantity(e.target.value, index)}
-                        />
-                        <span onMouseDown = {(e) => incrementQuantity(e, index)} className="cursor-pointer px-1">
-                            +
-                        </span>
-                    </TableCell>
-                    <TableCell>
-                        <input
-                        className="border-1 border-neutral-500 rounded pl-1"
-                        type="text"
-                        value={inventory[index].storageLocation}
-                        onChange={(e) => updateStorageLocation(e.target.value, index)}
-                        >
-                        </input>
-                    </TableCell>
-                    <TableCell className="text-right pr-5">
-                        <ActionsMenu 
-                            data={[row, row, row]}
-                            actions={inventoryActions}
-                        />
-                    </TableCell>
-                </TableRow>
+                {sortedData.map((row) => (
+                    <TableRow key={'w'+row.warehouseId+'p'+row.productId} className="border-1 border-neutral-500">
+
+                        <TableCell className="font-medium">{row.productName}</TableCell>
+
+                        <TableCell className="text-center">
+                            <span onMouseDown={(e) => decrementQuantity(e, row.productId)} className="cursor-pointer px-1">-</span>
+
+                            <input
+                                className="w-8 text-center text-neutral-50 placeholder-neutral-50 border-1 border-neutral-500 rounded"
+                                type="text"
+                                value={row.quantity}
+                                onChange={(e) => updateQuantity(e.target.value, row.productId)}
+                            />
+
+                            <span onMouseDown={(e) => incrementQuantity(e, row.productId)} className="cursor-pointer px-1">+</span>
+                        </TableCell>
+
+                        <TableCell>
+                            <input
+                                className="border-1 border-neutral-500 rounded pl-1"
+                                type="text"
+                                value={row.storageLocation}
+                                onChange={(e) => updateStorageLocation(e.target.value, row.productId)}
+                            />
+                        </TableCell>
+
+                        <TableCell className="text-right pr-5">
+                            <ActionsMenu 
+                                data={[row, row, row]}
+                                actions={inventoryActions}
+                            />
+                        </TableCell>
+                    </TableRow>
                 ))}
             </TableBody>
         </Table>
@@ -157,21 +232,22 @@ const InventoryTable = ({ warehouse, warehouses, onChangeView, onSaveChanges, ha
             setOpen={setDetailsDialogIsOpen}
             selectedInventory={selectedInventory}
         />
+
         <DeleteInventoryModal
             open={deleteDialogIsOpen}
             setOpen={setDeleteDialogIsOpen}
             onDelete={() => handleDeleteInventory(selectedInventory)}
         />
+
         <TransferInventoryModal
             open={transferDialogIsOpen}
             setOpen={setTransferDialogIsOpen}
-            onSubmit={() => handleTransferInventory()}
+            onSubmit={(source, dest, body) => onTransfer(source, dest, body)}
             sourceWarehouse={warehouse}
             warehouses={warehouses}
             inventory={selectedInventory}
         />
-        </>
-    );
+    </>);
 }
 
 export default InventoryTable;

@@ -8,7 +8,7 @@ import InventoryTable from './components/InventoryTable'
 import ProductsTable from './components/ProductsTable'
 
 import { getWarehouses, updateInventory, deleteWarehouse, createWarehouse, getProducts, addInventory,
-    getWarehouseById, createProduct, editWarehouse, deleteInventory, editProduct
+    getWarehouseById, createProduct, editWarehouse, deleteInventory, editProduct, deleteProduct, transferInventory
  } from './lib/api'
 
 function App() {
@@ -115,6 +115,22 @@ function App() {
         });
     }
 
+    const fetchDeleteProduct = (id) => {
+        deleteProduct(id)
+        .then(() => {
+            getWarehouses()
+            .then(response => setWarehouses(response));
+        });
+    }
+
+    const fetchTransferInventory = (source, dest, body) => {
+        transferInventory(source, dest, body)
+        .then(() => {
+            getWarehouses()
+            .then(response => setWarehouses(response));
+        });
+    }
+
     const RenderView = () => {
         if (view === "warehouses") {
             return (
@@ -135,6 +151,7 @@ function App() {
                     onChangeView={(view) => setView(view)}
                     onSaveChanges={(changes) => fetchUpdateInventory(changes)}  
                     handleDeleteInventory={(inventory) => fetchDeleteInventory(inventory)}
+                    handleTransferInventory={(source, dest, body) => fetchTransferInventory(source, dest, body)}
                 />
             )
         } else if (view === "products") {
@@ -146,6 +163,7 @@ function App() {
                     handleAddInventory={(body) => fetchAddInventory(body)}
                     handleCreateProduct={(body) => fetchCreateProduct(body)}
                     handleEditProduct={(id, body) => fetchEditProduct(id, body)}
+                    handleDeleteProduct={(id) => fetchDeleteProduct(id)}
                 />
             )
         }
