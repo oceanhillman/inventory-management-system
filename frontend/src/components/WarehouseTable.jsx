@@ -91,7 +91,8 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
     }
 
     return (
-        <>  <div className="flex flex-row items-center justify-center p-4">
+        <>  
+            <div className="flex flex-row items-center justify-center p-4">
                 <h1 className="text-neutral-50 text-2xl font-bold pb-7">Warehouses</h1>
             </div>
             <div className="flex flex-row justify-between p-4">

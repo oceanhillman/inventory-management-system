@@ -3,6 +3,8 @@ import './index.css'
 
 import { Button } from './components/ui/button'
 import { toast } from "sonner"
+import Breadcrumbs from "@/components/Breadcrumbs"
+
 
 import WarehouseTable from './components/WarehouseTable'
 import InventoryTable from './components/InventoryTable'
@@ -19,7 +21,6 @@ function App() {
     const [error, setError] = useState(null);
     const [view, setView] = useState("warehouses");
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
-    const [message, setMessage] = useState("");
 
     useEffect(() => {
         getWarehouses()
@@ -168,6 +169,7 @@ function App() {
     const RenderView = () => {
         if (view === "warehouses") {
             return (
+            <>
                 <WarehouseTable 
                     data={warehouses}
                     onChangeView={(view) => setView(view)}
@@ -176,9 +178,11 @@ function App() {
                     handleCreateWarehouse={(body) => fetchCreateWarehouse(body)}
                     handleEditWarehouse={(id, body) => fetchEditWarehouse(id, body)}
                 />
+            </>
             )
         } else if (view === "inventory") {
             return (
+            <>
                 <InventoryTable
                     warehouse={selectedWarehouse}
                     warehouses={warehouses}
@@ -187,9 +191,11 @@ function App() {
                     handleDeleteInventory={(inventory) => fetchDeleteInventory(inventory)}
                     handleTransferInventory={(source, dest, body) => fetchTransferInventory(source, dest, body)}
                 />
+            </>
             )
         } else if (view === "products") {
             return (
+            <>
                 <ProductsTable
                     data={products}
                     warehouse={selectedWarehouse}
@@ -199,19 +205,28 @@ function App() {
                     handleEditProduct={(id, body) => fetchEditProduct(id, body)}
                     handleDeleteProduct={(id) => fetchDeleteProduct(id)}
                 />
+            </>
             )
         }
     }
-
-    if (loading) return <div>Loading</div>;
-    if (!warehouses) return <div>No data found</div>;
 
     return (
         <>
             <div className="flex min-h-svh flex-col items-center justify-start bg-[#101010]">
                 <div className="w-screen">
-                <p>{message}</p>
-                    <RenderView />
+                    <div className="p-4">
+                        <Breadcrumbs
+                            view={view}
+                            setView={setView}
+                            selectedWarehouse={selectedWarehouse}
+                        />
+                    </div>
+                    <div className="px-4">
+                        {!loading && warehouses ?
+                            <RenderView /> : null
+                        }
+                    </div>
+                    
                 </div>
             </div>
         </>
