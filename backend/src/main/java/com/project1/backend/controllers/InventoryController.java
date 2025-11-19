@@ -21,7 +21,7 @@ import com.project1.backend.dtos.InventoryResponse;
 import com.project1.backend.services.InventoryService;
 
 @RestController
-@CrossOrigin(origins = "${FRONTEND_URL}")
+@CrossOrigin(origins = "${FRONTEND_URL}", exposedHeaders = "error")
 @RequestMapping("/warehouses/{warehouseId}/inventory")
 public class InventoryController {
     

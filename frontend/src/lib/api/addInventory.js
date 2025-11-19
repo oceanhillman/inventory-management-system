@@ -1,5 +1,9 @@
 export default async function addInventory(body) {
     try {
+        if (body.quantity <= 0) {
+            throw new Error("Error adding inventory: quantity must be greater than zero.");
+        }
+
         const response = await fetch(`http://localhost:8080/warehouses/${body?.warehouseId}/inventory`,
             {
                 method: 'POST',
@@ -17,6 +21,6 @@ export default async function addInventory(body) {
         console.log(result);
         return result;
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 }

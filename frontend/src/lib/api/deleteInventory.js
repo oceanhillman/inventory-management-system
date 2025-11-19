@@ -17,6 +17,6 @@ export default async function deleteInventory(inventory) {
         
         return "Deleted successfully";
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 }

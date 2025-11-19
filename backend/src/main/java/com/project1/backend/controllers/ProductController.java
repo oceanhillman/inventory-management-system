@@ -20,7 +20,7 @@ import com.project1.backend.dtos.ProductResponse;
 import com.project1.backend.services.ProductService;
 
 @RestController
-@CrossOrigin(origins = "${FRONTEND_URL}")
+@CrossOrigin(origins = "${FRONTEND_URL}", exposedHeaders = "error")
 @RequestMapping("/products")
 public class ProductController {
     

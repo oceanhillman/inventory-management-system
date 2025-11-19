@@ -7,6 +7,6 @@ export default async function getProducts() {
         const result = await response.json();
         return result;
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 }

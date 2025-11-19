@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import './index.css'
 
 import { Button } from './components/ui/button'
+import { toast } from "sonner"
 
 import WarehouseTable from './components/WarehouseTable'
 import InventoryTable from './components/InventoryTable'
@@ -35,100 +36,133 @@ function App() {
         }
     }, [warehouses])
 
-    const fetchUpdateInventory = (changes) => {
-        const patchRequests = changes.map((change) => {
-            const requestBody = {
-                productId: change.productId,
-                quantity: change.quantity,
-                storageLocation: change.storageLocation
-            };
-
-            return updateInventory(requestBody, change.warehouseId);
-        })
-
-        Promise.all(patchRequests)
-        .then(responses => {
-            return responses;
-        })
-        .then(() => {
-            getWarehouses()
-            .then(response => setWarehouses(response));
-        })
-        .catch(error => {
-            console.error('One or more requests failed:', error);
-        });
+   const fetchUpdateInventory = async (changes) => {
+        try {
+            const patchRequests = changes.map((change) => {
+                const requestBody = {
+                    productId: change.productId,
+                    quantity: change.quantity,
+                    storageLocation: change.storageLocation
+                };
+                return updateInventory(requestBody, change.warehouseId);
+            });
+            await Promise.all(patchRequests);
+            const response = await getWarehouses();
+            setWarehouses(response);
+            toast.success("Inventory successfully updated.");
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.message || "Failed to update inventory.");
+        }
     };
 
-    const fetchDeleteWarehouse = (id) => {
-        deleteWarehouse(id)
-        .then(() => {
-            getWarehouses()
-            .then(response => setWarehouses(response));
-        });
-    }
+    const fetchDeleteWarehouse = async (id) => {
+        try {
+            await deleteWarehouse(id);
+            const response = await getWarehouses();
+            setWarehouses(response);
+            toast.success("Warehouse successfully deleted.");
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.message || "Failed to delete warehouse.");
+        }
+    };
 
-    const fetchCreateWarehouse = (body) => {
-        createWarehouse(body)
-        .then(() => {
-            getWarehouses()
-            .then(response => setWarehouses(response));
-        });
-    }
+    const fetchAddInventory = async (body) => {
+        try {
+            await addInventory(body);
+            const response = await getWarehouses();
+            setWarehouses(response);
+            toast.success("Inventory successfully added.");
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.message || "Failed to add inventory.");
+        }
+    };
 
-    const fetchAddInventory = (body) => {
-        addInventory(body)
-        .then(() => {
-            getWarehouses()
-            .then(response => setWarehouses(response));
-        });
-    }
+    const fetchCreateProduct = async (body) => {
+        try {
+            await createProduct(body);
+            const response = await getWarehouses();
+            setWarehouses(response);
+            toast.success(`Product "${body.name}" successfully created.`);
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.message || "Failed to create product.");
+        }
+    };
 
-    const fetchCreateProduct = (body) => {
-        createProduct(body)
-        .then(() => {
-            getWarehouses()
-            .then(response => setWarehouses(response));
-        });
-    }
+    const fetchEditWarehouse = async (id, body) => {
+        try {
+            await editWarehouse(id, body);
+            const response = await getWarehouses();
+            setWarehouses(response);
+            toast.success(`Warehouse "${body.name}" successfully updated.`);
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.message || "Failed to update warehouse.");
+        }
+    };
 
-    const fetchEditWarehouse = (id, body) => {
-        editWarehouse(id, body)
-        .then(() => {
-            getWarehouses()
-            .then(response => setWarehouses(response));
-        });
-    }
+    const fetchDeleteInventory = async (inventory) => {
+        try {
+            await deleteInventory(inventory);
+            const response = await getWarehouses();
+            setWarehouses(response);
+            toast.success("Inventory entry successfully deleted.");
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.message || "Failed to delete inventory entry.");
+        }
+    };
 
-    const fetchDeleteInventory = (inventory) => {
-        deleteInventory(inventory)
-        .then(() => {
-            getWarehouses()
-            .then(response => setWarehouses(response));
-        });
-    }
+    const fetchEditProduct = async (id, body) => {
+        try {
+            await editProduct(id, body);
+            const response = await getWarehouses();
+            setWarehouses(response);
+            toast.success(`Product "${body.name}" successfully updated.`);
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.message || "Failed to update product.");
+        }
+    };
 
-    const fetchEditProduct = (id, body) => {
-        editProduct(id, body)
-        .then(() => {
-            getWarehouses()
-            .then(response => setWarehouses(response));
-        });
-    }
+    const fetchDeleteProduct = async (id) => {
+        try {
+            await deleteProduct(id);
+            const response = await getWarehouses();
+            setWarehouses(response);
+            toast.success("Product successfully deleted.");
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.message || "Failed to delete product.");
+        }
+    };
 
-    const fetchDeleteProduct = (id) => {
-        deleteProduct(id)
-        .then(() => {
-            getWarehouses()
-            .then(response => setWarehouses(response));
-        });
-    }
+    const fetchTransferInventory = async (source, dest, body) => {
+        try {
+            await transferInventory(source, dest, body);
+            const response = await getWarehouses();
+            setWarehouses(response);
+            toast.success("Inventory successfully transferred.");
+        } catch (error) {
+            console.error(error);
+            toast.error(error?.message || "Failed to transfer inventory.");
+        }
+    };
 
-    const fetchTransferInventory = (source, dest, body) => {
-        transferInventory(source, dest, body)
-        .then(() => {
-            getWarehouses()
-            .then(response => setWarehouses(response));
-        });
+    const fetchCreateWarehouse = async (body) => {
+        try {
+            await createWarehouse(body);
+            toast.success(`Warehouse "${body.name}" successfully created.`);
+            
+            const response = await getWarehouses();
+            setWarehouses(response);
+        } catch (error) {
+
+            toast.error(error?.message || "Failed to create warehouse.");
+        }
     }
 
     const RenderView = () => {

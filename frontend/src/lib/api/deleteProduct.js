@@ -14,6 +14,6 @@ export default async function deleteProduct(id) {
         
         return "Deleted successfully";
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 }

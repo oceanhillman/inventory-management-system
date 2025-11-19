@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
-@CrossOrigin(origins = "${FRONTEND_URL}")
+@CrossOrigin(origins = "${FRONTEND_URL}", exposedHeaders = "error")
 @RequestMapping("/warehouses")
 public class WarehouseController {
 

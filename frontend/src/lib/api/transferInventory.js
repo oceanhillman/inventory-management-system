@@ -10,13 +10,13 @@ export default async function transferInventory(source, dest, body) {
             }
         );
         if (!response.ok) {
-            throw new Error(`Error transferring inventory: ${response.status}`);
+            throw new Error(`Error transferring inventory: ${response.headers.get("error")}`);
         }
         const result = await response.json();
         console.log(response);
         console.log(result);
         return result;
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 }

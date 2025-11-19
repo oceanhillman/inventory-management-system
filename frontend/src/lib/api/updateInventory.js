@@ -10,13 +10,13 @@ export default async function updateInventory(request, warehouseId) {
             }
         );
         if (!response.ok) {
-            throw new Error(`Error patching inventory: ${response.status}`);
+            throw new Error(`Error updating inventory: ${response.headers.get("error")}`);
         }
         const result = await response.json();
         console.log(response);
         console.log(result);
         return result;
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 }
