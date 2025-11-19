@@ -16,17 +16,22 @@ import CreateWarehouseModal from "@/components/CreateWarehouseModal"
 import DeleteWarehouseModal from "@/components/DeleteWarehouseModal"
 import CreateProductModal from './CreateProductModal'
 import AddInventoryModal from './AddInventoryModal'
+import EditProductModal from './EditProductModal'
 
-const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, handleCreateProduct }) => {
+const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, handleCreateProduct, handleEditProduct }) => {
 
     const [createDialogIsOpen, setCreateDialogIsOpen] = useState(false);
     const [addDialogIsOpen, setAddDialogIsOpen] = useState(false);
+    const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
 
     const productActions = [
         {title:"Add to inventory", action: (product) => addInventory(product)},
-        {title:"Edit", action: () => {}},
+        {title:"Edit product details", action: (product) => {
+            setSelectedProduct(product);
+            setEditDialogIsOpen(true);
+        }},
         {title:"Delete", action: () => {}}
     ];
 
@@ -45,11 +50,31 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
         handleCreateProduct(body);
     }
 
+      const onEditProduct = (id, body) => {
+        setEditDialogIsOpen(false);
+        handleEditProduct(id, body);
+    }
+
+
     return (
         <>  
-            <Table className="bg-neutral-700 text-neutral-100 my-4">
+            <div className="flex flex-col items-center justify-center p-4">
+                <h1 className="text-neutral-100 text-2xl font-bold">Products</h1>
+                <h2 className="text-neutral-500 text-xl font-bold">{warehouse.name}</h2>
+            </div>
+            <div className="flex flex-row justify-between p-4">
+                <Button onClick={() => onChangeView('inventory')} className="bg-neutral-100 cursor-pointer">
+                Back to inventory
+                </Button>
+
+                <Button onClick={setCreateDialogIsOpen} className="bg-neutral-100 cursor-pointer">
+                Add new product
+                </Button>
+            </div>
+
+            <Table className="bg-neutral-700 text-neutral-200 shadow">
                 
-                <TableHeader className="bg-neutral-500">
+                <TableHeader className="bg-neutral-800 text-neutral-100">
                     <TableRow>
                         <TableHead>SKU</TableHead>
                         <TableHead>Name</TableHead>
@@ -63,7 +88,7 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
                 <TableBody>
                     {data.map((row) => (
                     <TableRow key={row.id} onClick={() => addInventory(row)} 
-                    className="hover:bg-neutral-600 cursor-pointer">
+                    className="hover:bg-neutral-600 cursor-pointer border-neutral-500 border-1">
                         <TableCell className="font-medium">{row.sku}</TableCell>
                         <TableCell>{row.name}</TableCell>
                         <TableCell className="text-center">{row.description}</TableCell>
@@ -80,15 +105,7 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
                 </TableBody>
 
             </Table>
-            <div className="flex flex-row justify-between">
-                <Button onClick={() => onChangeView('inventory')} className="bg-neutral-100 cursor-pointer">
-                Back to inventory
-                </Button>
-
-                <Button onClick={setCreateDialogIsOpen} className="bg-neutral-100 cursor-pointer">
-                Add new product
-                </Button>
-            </div>
+            
             <CreateProductModal
                 open={createDialogIsOpen}
                 setOpen={setCreateDialogIsOpen}
@@ -100,6 +117,12 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
                 onSubmit={(body) => onSubmitInventory(body)}
                 warehouse={warehouse}
                 selectedProduct={selectedProduct}
+            />
+            <EditProductModal
+                open={editDialogIsOpen}
+                setOpen={setEditDialogIsOpen}
+                onSubmit={(id, body) => onEditProduct(id, body)}
+                product={selectedProduct}
             />
         </>
     );

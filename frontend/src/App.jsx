@@ -8,7 +8,7 @@ import InventoryTable from './components/InventoryTable'
 import ProductsTable from './components/ProductsTable'
 
 import { getWarehouses, updateInventory, deleteWarehouse, createWarehouse, getProducts, addInventory,
-    getWarehouseById, createProduct, editWarehouse
+    getWarehouseById, createProduct, editWarehouse, deleteInventory, editProduct
  } from './lib/api'
 
 function App() {
@@ -99,6 +99,22 @@ function App() {
         });
     }
 
+    const fetchDeleteInventory = (inventory) => {
+        deleteInventory(inventory)
+        .then(() => {
+            getWarehouses()
+            .then(response => setWarehouses(response));
+        });
+    }
+
+    const fetchEditProduct = (id, body) => {
+        editProduct(id, body)
+        .then(() => {
+            getWarehouses()
+            .then(response => setWarehouses(response));
+        });
+    }
+
     const RenderView = () => {
         if (view === "warehouses") {
             return (
@@ -115,8 +131,10 @@ function App() {
             return (
                 <InventoryTable
                     warehouse={selectedWarehouse}
+                    warehouses={warehouses}
                     onChangeView={(view) => setView(view)}
                     onSaveChanges={(changes) => fetchUpdateInventory(changes)}  
+                    handleDeleteInventory={(inventory) => fetchDeleteInventory(inventory)}
                 />
             )
         } else if (view === "products") {
@@ -127,6 +145,7 @@ function App() {
                     onChangeView={(view) => setView(view)}
                     handleAddInventory={(body) => fetchAddInventory(body)}
                     handleCreateProduct={(body) => fetchCreateProduct(body)}
+                    handleEditProduct={(id, body) => fetchEditProduct(id, body)}
                 />
             )
         }
@@ -137,8 +156,8 @@ function App() {
 
     return (
         <>
-            <div className="flex min-h-svh flex-col items-center justify-center bg-neutral-900">
-                <div className="w-5/6">
+            <div className="flex min-h-svh flex-col items-center justify-start bg-[#101010]">
+                <div className="w-screen">
                 <p>{message}</p>
                     <RenderView />
                 </div>

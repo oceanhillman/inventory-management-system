@@ -52,10 +52,19 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
     }
 
     return (
-        <>  
-            <Table className="bg-neutral-700 text-neutral-100 my-4">
+        <>  <div className="flex flex-row items-center justify-center p-4">
+                <h1 className="text-neutral-50 text-2xl font-bold pb-7">Warehouses</h1>
+            </div>
+            <div className="flex flex-row justify-between p-4">
+                <div></div>
+                <Button onClick={() => setCreateDialogIsOpen(true)} className="bg-neutral-200 cursor-pointer">
+                Add new warehouse
+                </Button>
+            </div>
+
+            <Table className="bg-neutral-700 text-neutral-200 shadow">
                 
-                <TableHeader className="bg-neutral-500">
+                <TableHeader className="bg-neutral-800 text-neutral-100">
                     <TableRow>
                         <TableHead>Warehouse</TableHead>
                         <TableHead>Location</TableHead>
@@ -66,7 +75,7 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
 
                 <TableBody>
                     {data.map((row) => (
-                    <TableRow key={row.id} onClick={() => handleClickViewInventory(row)} className="hover:bg-neutral-600 cursor-pointer">
+                    <TableRow key={row.id} onClick={() => handleClickViewInventory(row)} className="hover:bg-neutral-600 cursor-pointer border-neutral-500">
                         <TableCell className="font-medium">{row.name}</TableCell>
                         <TableCell>
                             {row.location}</TableCell>
@@ -82,11 +91,7 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
                 </TableBody>
 
             </Table>
-            <div className="flex flex-row justify-between">
-                <Button onClick={() => setCreateDialogIsOpen(true)} className="bg-neutral-100 cursor-pointer">
-                Add new warehouse
-                </Button>
-            </div>
+
             <DeleteWarehouseModal
                 open={deleteDialogIsOpen}
                 setOpen={setDeleteDialogIsOpen}

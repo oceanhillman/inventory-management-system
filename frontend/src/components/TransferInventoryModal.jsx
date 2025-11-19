@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 
-const AddInventoryModal = ({ open, setOpen, onSubmit, warehouse, selectedProduct }) => {
+const TransferInventoryModal = ({ open, setOpen, onSubmit, sourceWarehouse, warehouses, inventory }) => {
 
     const [quantity, setQuantity] = useState(0);
     // const [storageLocation, setStorageLocation] = useState("");
@@ -31,16 +31,13 @@ const AddInventoryModal = ({ open, setOpen, onSubmit, warehouse, selectedProduct
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="bg-neutral-800 text-neutral-50" onClick={(e) => e.stopPropagation()}>
             <DialogHeader>
-                <DialogTitle>Add Inventory</DialogTitle>
+                <DialogTitle>Transfer Inventory</DialogTitle>
                 <div>
-                    <p>Adding to: {warehouse.name}</p>
-                    {selectedProduct && (
+                    <p>Source warehouse: {sourceWarehouse.name}</p>
+                    {inventory && (
                         <>
-                            <p>SKU: {selectedProduct.sku}</p>
-                            <p>Name: {selectedProduct.name}</p>
-                            <p>Description: {selectedProduct.description}</p>
-                            <p>Category: {selectedProduct.category}</p>
-                            <p>Price: {selectedProduct.price}</p>
+                            <p>Product: {inventory.productName}</p>
+                            <p>Quantity available: {inventory.quantity}</p>
                         </>
                     )}
                 </div>
@@ -61,7 +58,7 @@ const AddInventoryModal = ({ open, setOpen, onSubmit, warehouse, selectedProduct
                 <Button 
                 onClick={() => handleSubmit()} 
                 className="bg-neutral-50 text-black cursor-pointer">
-                Add Inventory
+                Create
                 </Button>
             </DialogFooter>
             </DialogContent>
@@ -69,4 +66,4 @@ const AddInventoryModal = ({ open, setOpen, onSubmit, warehouse, selectedProduct
     )
 }
 
-export default AddInventoryModal;
+export default TransferInventoryModal;

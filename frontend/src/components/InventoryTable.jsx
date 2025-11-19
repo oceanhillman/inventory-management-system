@@ -14,14 +14,37 @@ import {
 import { Button } from '@/components/ui/button'
 
 import ActionsMenu from "@/components/ActionsMenu"
+import ProductDetailsModal from "@/components/ProductDetailsModal"
+import DeleteInventoryModal from "@/components/DeleteInventoryModal"
+import TransferInventoryModal from "@/components/TransferInventoryModal"
 
 
-const InventoryTable = ({ warehouse, onChangeView, onSaveChanges }) => {
+const InventoryTable = ({ warehouse, warehouses, onChangeView, onSaveChanges, handleDeleteInventory, handleTransferInventory }) => {
 
     const [inventory, setInventory] = useState(warehouse.inventory);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
+    const [detailsDialogIsOpen, setDetailsDialogIsOpen] = useState(false);
+    const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState(false);
+    const [transferDialogIsOpen, setTransferDialogIsOpen] = useState(false);
+    const [selectedInventory, setSelectedInventory] = useState(null);
 
     const originalRef = useRef(cloneDeep(warehouse.inventory));
+
+        const inventoryActions = [
+        {title:"View product details", action: (inventory) => {
+            setSelectedInventory(inventory);
+            setDetailsDialogIsOpen(true);
+        }},
+        {title:"Transfer inventory", action: (inventory) => {
+            setSelectedInventory(inventory);
+            setTransferDialogIsOpen(true);
+        }},
+        {title:"Delete entry", action: (inventory) => {
+            setSelectedInventory(inventory);
+            setDeleteDialogIsOpen(true);
+        }},
+    ];
+
 
     const handleClickSave = () => {
         const changes = inventory.filter((item, index) => {
@@ -61,22 +84,28 @@ const InventoryTable = ({ warehouse, onChangeView, onSaveChanges }) => {
         setUnsavedChanges(true);
     }
 
-    const inventoryActions = [
-        {title:"View product details", action:{}},
-        {title:"Edit", action:{}},
-        {title:"Transfer", action:{}},
-        {title:"Delete", action:{}},
-    ];
-
     return (<>
-        <h1 className="text-center text-neutral-50">
-            Inventory at: {warehouse.name}
-        </h1>
-        <Table className="bg-neutral-700 text-neutral-100 my-4">
-
-            {/* <TableCaption>Inventory at: {warehouse.name}</TableCaption> */}
+        <div className="flex flex-col items-center justify-center p-4">
+                <h1 className="text-neutral-50 text-2xl font-bold">Inventory</h1>
+                <h2 className="text-neutral-500 text-xl font-bold">{warehouse.name}</h2>
+        </div>
+        <div className="flex flex-row justify-between p-4">
+            <Button onClick={() => onChangeView('warehouses')} className="bg-neutral-100 cursor-pointer">
+            Back to warehouses
+            </Button>
+            {unsavedChanges ? 
+                <Button onClick={() => handleClickSave()} className="bg-neutral-100 cursor-pointer">
+                Save changes
+                </Button>
+            : null}
+            <Button onClick={() => onChangeView('products')} className="bg-neutral-100 cursor-pointer">
+            Add new inventory
+            </Button>
+        </div>
         
-            <TableHeader className="bg-neutral-500">
+        <Table className="bg-neutral-700 text-neutral-200 shadow">
+        
+            <TableHeader className="bg-neutral-800 text-neutral-100">
                 <TableRow>
                     <TableHead>Product Name</TableHead>
                     <TableHead className="text-center">Quantity</TableHead>
@@ -85,9 +114,9 @@ const InventoryTable = ({ warehouse, onChangeView, onSaveChanges }) => {
                 </TableRow>
             </TableHeader>
 
-            <TableBody>
+            <TableBody className="border-neutral-500">
                 {inventory.map((row, index) => (
-                <TableRow key={'w' + row.warehouseId + 'p' + row.productId} className="">
+                <TableRow key={'w' + row.warehouseId + 'p' + row.productId} className="border-1 border-neutral-500">
                     <TableCell className="font-medium">{row.productName}</TableCell>
                     <TableCell className="text-center">
                         <span onMouseDown = {(e) => decrementQuantity(e, index)} className="cursor-pointer px-1">
@@ -114,35 +143,33 @@ const InventoryTable = ({ warehouse, onChangeView, onSaveChanges }) => {
                     </TableCell>
                     <TableCell className="text-right pr-5">
                         <ActionsMenu 
-                            data={row}
+                            data={[row, row, row]}
                             actions={inventoryActions}
                         />
                     </TableCell>
                 </TableRow>
                 ))}
             </TableBody>
-
-            {/* <TableFooter>
-                <TableRow>
-                <TableCell colSpan={3}>Total</TableCell>
-                <TableCell className="text-right">$2,500.00</TableCell>
-                </TableRow>
-            </TableFooter> */}
-
         </Table>
-        <div className="flex flex-row justify-between">
-            <Button onClick={() => onChangeView('warehouses')} className="bg-neutral-100 cursor-pointer">
-            Back to warehouses
-            </Button>
-            {unsavedChanges ? 
-                <Button onClick={() => handleClickSave()} className="bg-neutral-100 cursor-pointer">
-                Save changes
-                </Button>
-            : null}
-            <Button onClick={() => onChangeView('products')} className="bg-neutral-100 cursor-pointer">
-            Add new inventory
-            </Button>
-        </div>
+
+        <ProductDetailsModal
+            open={detailsDialogIsOpen}
+            setOpen={setDetailsDialogIsOpen}
+            selectedInventory={selectedInventory}
+        />
+        <DeleteInventoryModal
+            open={deleteDialogIsOpen}
+            setOpen={setDeleteDialogIsOpen}
+            onDelete={() => handleDeleteInventory(selectedInventory)}
+        />
+        <TransferInventoryModal
+            open={transferDialogIsOpen}
+            setOpen={setTransferDialogIsOpen}
+            onSubmit={() => handleTransferInventory()}
+            sourceWarehouse={warehouse}
+            warehouses={warehouses}
+            inventory={selectedInventory}
+        />
         </>
     );
 }
