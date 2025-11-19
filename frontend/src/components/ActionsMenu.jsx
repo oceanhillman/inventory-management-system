@@ -20,7 +20,7 @@ const ActionsMenu = ({ data, actions }) => {
         <DropdownMenu>
             <DropdownMenuTrigger onClick={(e) => e.stopPropagation()} className="cursor-pointer px-2">...</DropdownMenuTrigger>
 
-            <DropdownMenuContent className="text-neutral-50 bg-neutral-700">
+            <DropdownMenuContent className="text-neutral-50 bg-neutral-700 border-neutral-500">
                 {actions.map((item, index) => {
                     return(
                         <DropdownMenuItem 

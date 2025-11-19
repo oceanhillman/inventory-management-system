@@ -12,7 +12,7 @@ import { Button } from "./ui/button";
 const DeleteProductModal = ({ open, setOpen, product, onDelete}) => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="bg-neutral-800 text-neutral-50" onClick={(e) => e.stopPropagation()}>
+            <DialogContent className="bg-neutral-800 text-neutral-50 border-neutral-500" onClick={(e) => e.stopPropagation()}>
                 <DialogHeader>
                 <DialogTitle>Are you absolutely sure?</DialogTitle>
                 <DialogDescription>

@@ -29,7 +29,7 @@ const AddInventoryModal = ({ open, setOpen, onSubmit, warehouse, selectedProduct
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="bg-neutral-800 text-neutral-50" onClick={(e) => e.stopPropagation()}>
+            <DialogContent className="bg-neutral-800 text-neutral-50 border-neutral-500" onClick={(e) => e.stopPropagation()}>
             <DialogHeader>
                 <DialogTitle>Add Inventory</DialogTitle>
                 <div>
@@ -49,7 +49,7 @@ const AddInventoryModal = ({ open, setOpen, onSubmit, warehouse, selectedProduct
             <div className="grid gap-4">
                 <div className="grid gap-3">
                 <Label htmlFor="name">Product Quantity</Label>
-                <Input id="name" name="name" placeholder="0" value={quantity} onChange={(e) => setQuantity(e.target.value)}/>
+                <Input id="name" name="name" placeholder="0" value={quantity} onChange={(e) => setQuantity(e.target.value)} className="border-neutral-500"/>
                 {/* <Label htmlFor="name">Storage Location</Label>
                 <Input id="name" name="name" placeholder="Location" value={storageLocation} onChange={(e) => setStorageLocation(e.target.value)}/> */}
                 </div>

@@ -43,7 +43,7 @@ const TransferInventoryModal = ({ open, setOpen, onSubmit, sourceWarehouse, ware
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="bg-neutral-800 text-neutral-50" onClick={(e) => e.stopPropagation()}>
+            <DialogContent className="bg-neutral-800 text-neutral-50 border-neutral-500" onClick={(e) => e.stopPropagation()}>
             <DialogHeader>
                 <DialogTitle>Transfer Inventory</DialogTitle>
                 <div>
@@ -60,7 +60,7 @@ const TransferInventoryModal = ({ open, setOpen, onSubmit, sourceWarehouse, ware
             <div className="grid gap-4">
                 <div className="grid gap-3">
                 <Label htmlFor="name">Product Quantity</Label>
-                <Input id="name" name="name" placeholder="Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)}/>
+                <Input id="name" name="name" placeholder="Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} className="border-neutral-500"/>
                 {/* <Label htmlFor="name">Storage Location</Label>
                 <Input id="name" name="name" placeholder="Location" value={storageLocation} onChange={(e) => setStorageLocation(e.target.value)}/> */}
                 </div>
@@ -68,7 +68,7 @@ const TransferInventoryModal = ({ open, setOpen, onSubmit, sourceWarehouse, ware
                 <DropdownMenu>
                     <DropdownMenuTrigger onClick={(e) => e.stopPropagation()} className="cursor-pointer">
                         <Input type="text" value={destination ? destination.name : "Select Destination Warehouse"} 
-                            className="cursor-pointer hover:bg-neutral-700"
+                            className="cursor-pointer hover:bg-neutral-700 border-neutral-500"
                         />
                     </DropdownMenuTrigger>
 

@@ -97,7 +97,7 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
             </div>
             <div className="flex flex-row justify-between p-4">
                 <div></div>
-                <Button onClick={() => setCreateDialogIsOpen(true)} className="bg-neutral-200 cursor-pointer">
+                <Button onClick={() => setCreateDialogIsOpen(true)} className="bg-neutral-100 cursor-pointer">
                 Add new warehouse
                 </Button>
             </div>
@@ -156,7 +156,7 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
                 <TableBody>
                     {filteredData.map((row) => (
                     <TableRow key={row.id} onClick={() => handleClickViewInventory(row)} className="hover:bg-neutral-600 cursor-pointer border-neutral-500">
-                        <TableCell className="font-medium">{row.name}</TableCell>
+                        <TableCell className="font-medium h-14">{row.name}</TableCell>
                         <TableCell>
                             {row.location}</TableCell>
                         <TableCell className="text-center">{row.usedCapacity + "/" + row.capacity}</TableCell>

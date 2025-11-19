@@ -30,7 +30,7 @@ const CreateWarehouseModal = ({ open, setOpen, onSubmit }) => {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="bg-neutral-800 text-neutral-50" onClick={(e) => e.stopPropagation()}>
+            <DialogContent className="bg-neutral-800 text-neutral-50 border-neutral-500" onClick={(e) => e.stopPropagation()}>
             <DialogHeader>
                 <DialogTitle>Create Warehouse</DialogTitle>
                 <DialogDescription>
@@ -41,15 +41,15 @@ const CreateWarehouseModal = ({ open, setOpen, onSubmit }) => {
             <div className="grid gap-4">
                 <div className="grid gap-3">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" name="name" placeholder="Warehouse name" value={name} onChange={(e) => setName(e.target.value)}/>
+                <Input id="name" name="name" placeholder="Warehouse name" value={name} onChange={(e) => setName(e.target.value)} className="border-neutral-500"/>
                 </div>
                 <div className="grid gap-3">
                 <Label htmlFor="location">Location</Label>
-                <Input id="location" name="location" placeholder="Warehouse location" value={location} onChange={(e) => setLocation(e.target.value)}/>
+                <Input id="location" name="location" placeholder="Warehouse location" value={location} onChange={(e) => setLocation(e.target.value)} className="border-neutral-500"/>
                 </div>
                 <div className="grid gap-3">
                 <Label htmlFor="capacity">Capacity</Label>
-                <Input id="capacity" name="capacity" placeholder="Max capacity" value={capacity} onChange={(e) => setCapacity(e.target.value)}/>
+                <Input id="capacity" name="capacity" placeholder="Max capacity" value={capacity} onChange={(e) => setCapacity(e.target.value)} className="border-neutral-500"/>
                 </div>
             </div>
             <DialogFooter>

@@ -205,9 +205,9 @@ const decrementQuantity = (e, productId) => {
 
             <TableBody className="border-neutral-500">
                 {filteredData.map((row) => (
-                    <TableRow key={'w'+row.warehouseId+'p'+row.productId} className="border-1 border-neutral-500">
+                    <TableRow key={'w'+row.warehouseId+'p'+row.productId} className="border-neutral-500">
 
-                        <TableCell className="font-medium">{row.productName}</TableCell>
+                        <TableCell className="font-medium h-14">{row.productName}</TableCell>
 
                         <TableCell className="text-center">
                             <span onMouseDown={(e) => decrementQuantity(e, row.productId)} className="cursor-pointer px-1">-</span>

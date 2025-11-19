@@ -172,8 +172,8 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
                 <TableBody>
                     {filteredData.map((row) => (
                     <TableRow key={row.id} onClick={() => addInventory(row)} 
-                    className="hover:bg-neutral-600 cursor-pointer border-neutral-500 border-1">
-                        <TableCell className="font-medium">{row.sku}</TableCell>
+                    className="hover:bg-neutral-600 cursor-pointer border-neutral-500">
+                        <TableCell className="font-medium h-14">{row.sku}</TableCell>
                         <TableCell>{row.name}</TableCell>
                         <TableCell className="text-center">{row.description}</TableCell>
                         <TableCell>{row.category}</TableCell>

@@ -44,7 +44,7 @@ const EditProductModal = ({ open, setOpen, onSubmit, product }) => {
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="bg-neutral-800 text-neutral-50" onClick={(e) => e.stopPropagation()}>
+            <DialogContent className="bg-neutral-800 text-neutral-50 border-neutral-500" onClick={(e) => e.stopPropagation()}>
             <DialogHeader>
                 <DialogTitle>Edit Product Details</DialogTitle>
                 <DialogDescription>
@@ -54,23 +54,23 @@ const EditProductModal = ({ open, setOpen, onSubmit, product }) => {
             <div className="grid gap-4">
                 <div className="grid gap-3">
                 <Label htmlFor="sku">SKU</Label>
-                <Input id="sku" name="sku" placeholder="Product SKU" value={sku} onChange={(e) => setSku(e.target.value)}/>
+                <Input id="sku" name="sku" placeholder="Product SKU" value={sku} onChange={(e) => setSku(e.target.value)} className="border-neutral-500"/>
                 </div>
                 <div className="grid gap-3">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" name="name" placeholder="Product name" value={name} onChange={(e) => setName(e.target.value)}/>
+                <Input id="name" name="name" placeholder="Product name" value={name} onChange={(e) => setName(e.target.value)} className="border-neutral-500"/>
                 </div>
                 <div className="grid gap-3">
                 <Label htmlFor="description">Description</Label>
-                <Input id="description" name="description" placeholder="Product description" value={description} onChange={(e) => setDescription(e.target.value)}/>
+                <Input id="description" name="description" placeholder="Product description" value={description} onChange={(e) => setDescription(e.target.value)} className="border-neutral-500"/>
                 </div>
                 <div className="grid gap-3">
                 <Label htmlFor="category">Category</Label>
-                <Input id="category" name="category" placeholder="Category" value={category} onChange={(e) => setCategory(e.target.value)}/>
+                <Input id="category" name="category" placeholder="Category" value={category} onChange={(e) => setCategory(e.target.value)} className="border-neutral-500"/>
                 </div>
                 <div className="grid gap-3">
                 <Label htmlFor="price">Price</Label>
-                <Input id="price" name="price" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)}/>
+                <Input id="price" name="price" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} className="border-neutral-500"/>
                 </div> 
             </div>
             <DialogFooter>
