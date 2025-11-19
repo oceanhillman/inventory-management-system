@@ -8,6 +8,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Button } from '@/components/ui/button'
+import { Input } from "@/components/ui/input"
 
 import ActionsMenu from "@/components/ActionsMenu"
 import CreateProductModal from './CreateProductModal'
@@ -24,10 +25,11 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
     const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
     const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
-
     const [sortedBy, setSortedBy] = useState("sku");
     const [sortMethod, setSortMethod] = useState("ascending");
     const [sortedData, setSortedData] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredData, setFilteredData] = useState([]);
 
     useEffect(() => {
         setSortedData([...data].sort((a, b) => {
@@ -39,6 +41,15 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
             return 0;
         }));
     }, [sortedBy, sortMethod, data]);
+
+    useEffect(() => {
+        setFilteredData(sortedData.filter(product =>
+            product.sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            product.category.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+    }, [sortedData, searchTerm]);
 
     const renderChevron = (field) => {
         if (sortedBy === field) {
@@ -91,6 +102,13 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
                 <Button onClick={setCreateDialogIsOpen} className="bg-neutral-100 cursor-pointer">
                 Add new product
                 </Button>
+            </div>
+            <div className="flex flex-row p-4 justify-center">
+                <Input className="bg-neutral-700 text-neutral-100 placeholder:text-neutral-100 w-1/2 border-1 border-neutral-500"
+                    placeholder="Search inventory..."
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    value={searchTerm}
+                />
             </div>
 
             <Table className="bg-neutral-700 text-neutral-200 shadow">
@@ -152,7 +170,7 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
                 </TableHeader>
 
                 <TableBody>
-                    {sortedData.map((row) => (
+                    {filteredData.map((row) => (
                     <TableRow key={row.id} onClick={() => addInventory(row)} 
                     className="hover:bg-neutral-600 cursor-pointer border-neutral-500 border-1">
                         <TableCell className="font-medium">{row.sku}</TableCell>

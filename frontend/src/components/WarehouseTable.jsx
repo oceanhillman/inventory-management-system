@@ -10,6 +10,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Button } from '@/components/ui/button'
+import { Input } from "@/components/ui/input"
 
 import ActionsMenu from "@/components/ActionsMenu"
 import CreateWarehouseModal from "@/components/CreateWarehouseModal"
@@ -27,8 +28,8 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
     const [sortedBy, setSortedBy] = useState("name");
     const [sortMethod, setSortMethod] = useState("ascending");
     const [sortedData, setSortedData] = useState([]);
-
-    
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredData, setFilteredData] = useState([]);
 
     useEffect(() => {
         setSortedData([...data].sort((a, b) => {
@@ -44,6 +45,13 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
             return 0;
         }));
     }, [sortedBy, sortMethod, data]);
+
+    useEffect(() => {
+        setFilteredData(sortedData.filter(warehouse =>
+            warehouse.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            warehouse.location.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+    }, [sortedData, searchTerm]);
 
     const warehouseActions = [
         {title:"View inventory", action: (warehouse) => {handleClickViewInventory(warehouse)}},
@@ -92,6 +100,13 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
                 Add new warehouse
                 </Button>
             </div>
+            <div className="flex flex-row p-4 justify-center">
+                <Input className="bg-neutral-700 text-neutral-100 placeholder:text-neutral-100 w-1/2 border-1 border-neutral-500"
+                    placeholder="Search warehouses..."
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    value={searchTerm}
+                />
+            </div>
 
             <Table className="bg-neutral-700 text-neutral-200 shadow">
                 
@@ -138,7 +153,7 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
                 </TableHeader>
 
                 <TableBody>
-                    {sortedData.map((row) => (
+                    {filteredData.map((row) => (
                     <TableRow key={row.id} onClick={() => handleClickViewInventory(row)} className="hover:bg-neutral-600 cursor-pointer border-neutral-500">
                         <TableCell className="font-medium">{row.name}</TableCell>
                         <TableCell>

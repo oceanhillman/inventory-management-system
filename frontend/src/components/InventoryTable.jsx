@@ -12,6 +12,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Button } from '@/components/ui/button'
+import { Input } from "@/components/ui/input"
 
 import ActionsMenu from "@/components/ActionsMenu"
 import ProductDetailsModal from "@/components/ProductDetailsModal"
@@ -33,6 +34,8 @@ const InventoryTable = ({ warehouse, warehouses, onChangeView, onSaveChanges, ha
     const [sortedBy, setSortedBy] = useState("productName");
     const [sortMethod, setSortMethod] = useState("ascending");
     const [sortedData, setSortedData] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredData, setFilteredData] = useState([]);
 
     useEffect(() => {
         setSortedData([...inventory].sort((a, b) => {
@@ -44,6 +47,13 @@ const InventoryTable = ({ warehouse, warehouses, onChangeView, onSaveChanges, ha
             return 0;
         }));
     }, [sortedBy, sortMethod, inventory]);
+
+    useEffect(() => {
+        setFilteredData(sortedData.filter(inventory =>
+            inventory.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            inventory.storageLocation.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+    }, [sortedData, searchTerm]);
 
     const renderChevron = (field) => {
         if (sortedBy === field) {
@@ -118,7 +128,6 @@ const decrementQuantity = (e, productId) => {
             <h1 className="text-neutral-50 text-2xl font-bold">Inventory</h1>
             <h2 className="text-neutral-500 text-xl font-bold">{warehouse.name}</h2>
         </div>
-
         <div className="flex flex-row justify-between p-4">
             <Button onClick={() => onChangeView('warehouses')} className="bg-neutral-100 cursor-pointer">
                 Back to warehouses
@@ -133,6 +142,13 @@ const decrementQuantity = (e, productId) => {
             <Button onClick={() => onChangeView('products')} className="bg-neutral-100 cursor-pointer">
                 View all products
             </Button>
+        </div>
+        <div className="flex flex-row p-4 justify-center">
+            <Input className="bg-neutral-700 text-neutral-100 placeholder:text-neutral-100 w-1/2 border-1 border-neutral-500"
+                placeholder="Search inventory..."
+                onChange={(e) => setSearchTerm(e.target.value)}
+                value={searchTerm}
+            />
         </div>
         
         <Table className="bg-neutral-700 text-neutral-200 shadow">
@@ -153,7 +169,6 @@ const decrementQuantity = (e, productId) => {
                         </div>
                     </TableHead>
 
-                    {/* ⭐ Quantity sorting */}
                     <TableHead 
                         onClick={() => {
                             if (sortedBy === "quantity") {
@@ -189,7 +204,7 @@ const decrementQuantity = (e, productId) => {
             </TableHeader>
 
             <TableBody className="border-neutral-500">
-                {sortedData.map((row) => (
+                {filteredData.map((row) => (
                     <TableRow key={'w'+row.warehouseId+'p'+row.productId} className="border-1 border-neutral-500">
 
                         <TableCell className="font-medium">{row.productName}</TableCell>
