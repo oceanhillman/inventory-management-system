@@ -1,0 +1,11 @@
+{
+  "source": {
+    "include": ["src/lib/api"]
+  },
+  "opts": {
+    "destination": "./docs",
+    "recurse": true,
+    "readme": "src/README.md",
+    "template": "node_modules/minami"
+  }
+}
