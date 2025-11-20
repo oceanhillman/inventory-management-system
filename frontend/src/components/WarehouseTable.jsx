@@ -92,23 +92,24 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
 
     return (
         <>  
-            <div className="flex flex-row items-center justify-center p-4">
-                <h1 className="text-neutral-50 text-2xl font-bold pb-7">Warehouses</h1>
+            <div className="flex flex-col items-center justify-center p-4">
+                <h1 className="text-neutral-50 text-4xl font-bold">Inventory Management Dashboard</h1>
+                <h2 className="text-neutral-500 text-3xl font-bold">Warehouses</h2>
             </div>
-            <div className="flex flex-row justify-between p-4">
+            <div className="flex flex-row justify-between">
                 <div></div>
-                <Button onClick={() => setCreateDialogIsOpen(true)} className="bg-neutral-100 cursor-pointer">
+                <Button onClick={() => setCreateDialogIsOpen(true)} className="bg-neutral-700 text-neutral-100 border-neutral-600 border-1 shadow cursor-pointer">
                 Add new warehouse
                 </Button>
             </div>
             <div className="flex flex-row p-4 justify-center">
-                <Input className="bg-neutral-700 text-neutral-100 placeholder:text-neutral-100 w-1/2 border-1 border-neutral-500"
+                <Input className="bg-neutral-700 text-neutral-100 placeholder:text-neutral-100 w-1/2 border-1 border-neutral-600"
                     placeholder="Search warehouses..."
                     onChange={(e) => setSearchTerm(e.target.value)}
                     value={searchTerm}
                 />
             </div>
-            <div className="rounded-xl overflow-hidden shadow">
+            <div className="rounded-xl overflow-hidden shadow border-neutral-700 border-1">
                 <Table className="bg-neutral-700 text-neutral-200">
                     
                     <TableHeader className="bg-neutral-800 text-neutral-100">

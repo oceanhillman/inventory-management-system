@@ -27,14 +27,13 @@ public class ActivityInterceptor implements HandlerInterceptor {
 
         String method = request.getMethod();
         String path = request.getRequestURI();
-        int status = response.getStatus();
 
         String message = response.getHeader("X-Activity-Message");
 
         String action = method;
-        String details = (message != null) ? message : "Status: " + status;
+        String details = message;
 
-        if (!path.startsWith("/actuator") && !method.equals("GET") && !method.equals("OPTIONS")) {
+        if (message != null && !path.startsWith("/actuator") && !method.equals("GET") && !method.equals("OPTIONS")) {
             service.log(action, details);
         }
     }

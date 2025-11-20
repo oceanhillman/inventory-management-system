@@ -92,26 +92,26 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
     return (
         <>  
             <div className="flex flex-col items-center justify-center p-4">
-                <h1 className="text-neutral-100 text-2xl font-bold">Products</h1>
-                <h2 className="text-neutral-500 text-xl font-bold">{warehouse.name}</h2>
+                <h1 className="text-neutral-50 text-4xl font-bold">{warehouse.name}</h1>
+                <h2 className="text-neutral-500 text-3xl font-bold">Products</h2>
             </div>
-            <div className="flex flex-row justify-between p-4">
-                <Button onClick={() => onChangeView('inventory')} className="bg-neutral-100 cursor-pointer">
+            <div className="flex flex-row justify-between">
+                <Button onClick={() => onChangeView('inventory')} className="bg-neutral-700 text-neutral-100 border-neutral-600 border-1 shadow cursor-pointer">
                 Back to inventory
                 </Button>
-                <Button onClick={setCreateDialogIsOpen} className="bg-neutral-100 cursor-pointer">
+                <Button onClick={setCreateDialogIsOpen} className="bg-neutral-700 text-neutral-100 border-neutral-600 border-1 shadow cursor-pointer">
                 Add new product
                 </Button>
             </div>
             <div className="flex flex-row p-4 justify-center">
-                <Input className="bg-neutral-700 text-neutral-100 placeholder:text-neutral-100 w-1/2 border-1 border-neutral-500"
+                <Input className="bg-neutral-700 text-neutral-100 placeholder:text-neutral-100 w-1/2 border-1 border-neutral-600"
                     placeholder="Search inventory..."
                     onChange={(e) => setSearchTerm(e.target.value)}
                     value={searchTerm}
                 />
             </div>
 
-            <div className="rounded-xl overflow-hidden shadow">
+            <div className="rounded-xl overflow-hidden shadow border-neutral-700 border-1">
                 <Table className="bg-neutral-700 text-neutral-200">
                     <TableHeader className="bg-neutral-800 text-neutral-100">
                         <TableRow>

@@ -15,6 +15,7 @@ import { getWarehouses, updateInventory, deleteWarehouse, createWarehouse, getPr
     getRecentActivity
  } from './lib/api'
 import ActivityLog from './components/ActivityLog'
+import DonutChart from './components/DonutChart'
 
 function App() {
     const [warehouses, setWarehouses] = useState(null);
@@ -220,7 +221,7 @@ function App() {
     return (
         <>
             <div className="flex min-h-svh flex-col items-center justify-start bg-[#101010]">
-                <div className="w-screen">
+                <div className="w-screen px-16 xl:px-32 py-8">
                     <div className="p-4">
                         <Breadcrumbs
                             view={view}
@@ -233,10 +234,10 @@ function App() {
                             <RenderView /> : null
                         }
                     </div>
-                    <div className="w-full flex flex-row justify-between items-center p-4 space-x-4">
+                    <div className="w-full grid grid-cols-1 xl:grid-cols-2 justify-between p-4 gap-4">
                         <div className="w-full">
-                            <ActivityLog 
-                                recentActivity={recentActivity}
+                            <DonutChart 
+                                warehouses={warehouses}
                             />
                         </div>
 
