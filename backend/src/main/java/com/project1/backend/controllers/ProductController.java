@@ -3,6 +3,7 @@ package com.project1.backend.controllers;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,7 +34,13 @@ public class ProductController {
     public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductRequest request) {
         try {
             ProductResponse response = service.createProduct(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("X-Activity-Message", "Created product: " + request.name());
+            return ResponseEntity.status(HttpStatus.CREATED)
+                                 .headers(headers)
+                                 .body(response);
+
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().header("error", e.getMessage()).build();
         } catch (Exception e) {
@@ -67,7 +74,13 @@ public class ProductController {
     public ResponseEntity<ProductResponse> updateProduct(@PathVariable Integer id, @RequestBody ProductRequest request) {
         try {
             ProductResponse response = service.updateProduct(id, request);
-            return ResponseEntity.ok(response);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("X-Activity-Message", "Updated product details: " + request.name());
+            return ResponseEntity.status(HttpStatus.OK)
+                                 .headers(headers)
+                                 .body(response);
+
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().header("error", e.getMessage()).build();
         } catch (Exception e) {
@@ -78,8 +91,13 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Integer id) {
         try {
-            service.deleteProduct(id);
-            return ResponseEntity.ok("Product deleted successfully.");
+            String deleted = service.deleteProduct(id);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("X-Activity-Message", "Deleted product: " + deleted);
+            return ResponseEntity.status(HttpStatus.OK)
+                                 .headers(headers)
+                                 .build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().header("error", e.getMessage()).build();
         } catch (Exception e) {

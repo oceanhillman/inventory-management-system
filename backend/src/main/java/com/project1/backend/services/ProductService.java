@@ -68,10 +68,12 @@ public class ProductService {
     }
 
     @Transactional
-    public void deleteProduct(Integer id) {
+    public String deleteProduct(Integer id) {
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("No product found with that ID."));
 
         productRepository.delete(product);
+
+        return product.getName();
     }
 }

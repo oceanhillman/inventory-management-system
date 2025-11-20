@@ -150,97 +150,98 @@ const decrementQuantity = (e, productId) => {
                 value={searchTerm}
             />
         </div>
-        
-        <Table className="bg-neutral-700 text-neutral-200 shadow">
-            <TableHeader className="bg-neutral-800 text-neutral-100">
-                <TableRow>
-                    <TableHead 
-                        onClick={() => {
-                            if (sortedBy === "productName") {
-                                setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
-                            }
-                            setSortedBy("productName");
-                        }}
-                        className="cursor-pointer"
-                    >
-                        <div className="flex flex-row items-center">
-                            Product Name
-                            {renderChevron("productName")}
-                        </div>
-                    </TableHead>
+        <div className="rounded-xl overflow-hidden shadow">
+            <Table className="bg-neutral-700 text-neutral-200">
+                <TableHeader className="bg-neutral-800 text-neutral-100">
+                    <TableRow>
+                        <TableHead 
+                            onClick={() => {
+                                if (sortedBy === "productName") {
+                                    setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
+                                }
+                                setSortedBy("productName");
+                            }}
+                            className="cursor-pointer"
+                        >
+                            <div className="flex flex-row items-center">
+                                Product Name
+                                {renderChevron("productName")}
+                            </div>
+                        </TableHead>
 
-                    <TableHead 
-                        onClick={() => {
-                            if (sortedBy === "quantity") {
-                                setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
-                            }
-                            setSortedBy("quantity");
-                        }}
-                        className="cursor-pointer text-center"
-                    >
-                        <div className="flex flex-row items-center justify-center">
-                            Quantity
-                            {renderChevron("quantity")}
-                        </div>
-                    </TableHead>
+                        <TableHead 
+                            onClick={() => {
+                                if (sortedBy === "quantity") {
+                                    setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
+                                }
+                                setSortedBy("quantity");
+                            }}
+                            className="cursor-pointer text-center"
+                        >
+                            <div className="flex flex-row items-center justify-center">
+                                Quantity
+                                {renderChevron("quantity")}
+                            </div>
+                        </TableHead>
 
-                    <TableHead 
-                        onClick={() => {
-                            if (sortedBy === "storageLocation") {
-                                setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
-                            }
-                            setSortedBy("storageLocation");
-                        }}
-                        className="cursor-pointer text-left"
-                    >
-                        <div className="flex flex-row items-center">
-                            Storage Location
-                            {renderChevron("storageLocation")}
-                        </div>
-                    </TableHead>
+                        <TableHead 
+                            onClick={() => {
+                                if (sortedBy === "storageLocation") {
+                                    setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
+                                }
+                                setSortedBy("storageLocation");
+                            }}
+                            className="cursor-pointer text-left"
+                        >
+                            <div className="flex flex-row items-center">
+                                Storage Location
+                                {renderChevron("storageLocation")}
+                            </div>
+                        </TableHead>
 
-                    <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-            </TableHeader>
-
-            <TableBody className="border-neutral-500">
-                {filteredData.map((row) => (
-                    <TableRow key={'w'+row.warehouseId+'p'+row.productId} className="border-neutral-500">
-
-                        <TableCell className="font-medium h-14">{row.productName}</TableCell>
-
-                        <TableCell className="text-center">
-                            <span onMouseDown={(e) => decrementQuantity(e, row.productId)} className="cursor-pointer px-1">-</span>
-
-                            <input
-                                className="w-8 text-center text-neutral-50 placeholder-neutral-50 border-1 border-neutral-500 rounded"
-                                type="text"
-                                value={row.quantity}
-                                onChange={(e) => updateQuantity(e.target.value, row.productId)}
-                            />
-
-                            <span onMouseDown={(e) => incrementQuantity(e, row.productId)} className="cursor-pointer px-1">+</span>
-                        </TableCell>
-
-                        <TableCell>
-                            <input
-                                className="border-1 border-neutral-500 rounded pl-1"
-                                type="text"
-                                value={row.storageLocation}
-                                onChange={(e) => updateStorageLocation(e.target.value, row.productId)}
-                            />
-                        </TableCell>
-
-                        <TableCell className="text-right pr-5">
-                            <ActionsMenu 
-                                data={[row, row, row]}
-                                actions={inventoryActions}
-                            />
-                        </TableCell>
+                        <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+                </TableHeader>
+
+                <TableBody className="border-neutral-500">
+                    {filteredData.map((row) => (
+                        <TableRow key={'w'+row.warehouseId+'p'+row.productId} className="border-neutral-500">
+
+                            <TableCell className="font-medium h-14">{row.productName}</TableCell>
+
+                            <TableCell className="text-center">
+                                <span onMouseDown={(e) => decrementQuantity(e, row.productId)} className="cursor-pointer px-1">-</span>
+
+                                <input
+                                    className="w-8 text-center text-neutral-50 placeholder-neutral-50 border-1 border-neutral-500 rounded"
+                                    type="text"
+                                    value={row.quantity}
+                                    onChange={(e) => updateQuantity(e.target.value, row.productId)}
+                                />
+
+                                <span onMouseDown={(e) => incrementQuantity(e, row.productId)} className="cursor-pointer px-1">+</span>
+                            </TableCell>
+
+                            <TableCell>
+                                <input
+                                    className="border-1 border-neutral-500 rounded pl-1"
+                                    type="text"
+                                    value={row.storageLocation}
+                                    onChange={(e) => updateStorageLocation(e.target.value, row.productId)}
+                                />
+                            </TableCell>
+
+                            <TableCell className="text-right pr-5">
+                                <ActionsMenu 
+                                    data={[row, row, row]}
+                                    actions={inventoryActions}
+                                />
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </div>
 
         <ProductDetailsModal
             open={detailsDialogIsOpen}

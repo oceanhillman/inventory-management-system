@@ -3,6 +3,7 @@ package com.project1.backend.controllers;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -34,7 +35,13 @@ public class WarehouseController {
     public ResponseEntity<WarehouseResponse> createWarehouse(@RequestBody WarehouseRequest request) {
         try {
             WarehouseResponse response = service.createWarehouse(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("X-Activity-Message", "Created new warehouse: " + request.name());
+            return ResponseEntity.status(HttpStatus.CREATED)
+                                 .headers(headers)
+                                 .body(response);
+
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().header("error", e.getMessage()).build();
         } catch (Exception e) {
@@ -68,7 +75,13 @@ public class WarehouseController {
     public ResponseEntity<WarehouseResponse> updateWarehouse(@PathVariable Integer id, @RequestBody WarehouseRequest request) {
         try {
             WarehouseResponse response = service.updateWarehouse(id, request);
-            return ResponseEntity.ok(response);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("X-Activity-Message", "Updated warehouse details: " + request.name());
+            return ResponseEntity.status(HttpStatus.OK)
+                                 .headers(headers)
+                                 .body(response);
+
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().header("error", e.getMessage()).build();
         } catch (Exception e) {
@@ -79,8 +92,14 @@ public class WarehouseController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteWarehouse(@PathVariable Integer id) {
         try {
-            service.deleteWarehouse(id);
-            return ResponseEntity.ok("Warehouse deleted successfully.");
+            String deleted = service.deleteWarehouse(id);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("X-Activity-Message", "Deleted warehouse: " + deleted);
+            return ResponseEntity.status(HttpStatus.OK)
+                                 .headers(headers)
+                                 .build();
+
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().header("error", e.getMessage()).build();
         } catch (Exception e) {

@@ -11,8 +11,10 @@ import InventoryTable from './components/InventoryTable'
 import ProductsTable from './components/ProductsTable'
 
 import { getWarehouses, updateInventory, deleteWarehouse, createWarehouse, getProducts, addInventory,
-    getWarehouseById, createProduct, editWarehouse, deleteInventory, editProduct, deleteProduct, transferInventory
+    getWarehouseById, createProduct, editWarehouse, deleteInventory, editProduct, deleteProduct, transferInventory,
+    getRecentActivity
  } from './lib/api'
+import ActivityLog from './components/ActivityLog'
 
 function App() {
     const [warehouses, setWarehouses] = useState(null);
@@ -21,6 +23,7 @@ function App() {
     const [error, setError] = useState(null);
     const [view, setView] = useState("warehouses");
     const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+    const [recentActivity, setRecentActivity] = useState([]);
 
     useEffect(() => {
         getWarehouses()
@@ -31,6 +34,10 @@ function App() {
     useEffect(() => {
         getProducts()
             .then(response => setProducts(response));
+            
+        getRecentActivity()
+            .then(response => setRecentActivity(response));
+
         if (selectedWarehouse) {
             getWarehouseById(selectedWarehouse.id)
                 .then(response => setSelectedWarehouse(response));
@@ -226,7 +233,19 @@ function App() {
                             <RenderView /> : null
                         }
                     </div>
-                    
+                    <div className="w-full flex flex-row justify-between items-center p-4 space-x-4">
+                        <div className="w-full">
+                            <ActivityLog 
+                                recentActivity={recentActivity}
+                            />
+                        </div>
+
+                        <div className="w-full">
+                            <ActivityLog 
+                                recentActivity={recentActivity}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

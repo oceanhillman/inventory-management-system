@@ -69,10 +69,11 @@ public class WarehouseService {
     }
 
     @Transactional
-    public void deleteWarehouse(Integer id) {
+    public String deleteWarehouse(Integer id) {
         Warehouse warehouse = warehouseRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("No warehouse found with that ID."));
 
         warehouseRepository.delete(warehouse);
+        return (warehouse.getName());
     }
 }

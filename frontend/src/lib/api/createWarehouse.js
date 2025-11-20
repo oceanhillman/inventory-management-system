@@ -3,7 +3,7 @@ export default async function createWarehouse(body) {
         if (body.name === "" || body.location === "" || body.capacity === "") {
             throw new Error("Error creating warehouse: please ensure there are no empty fields.");
         }
-        if (typeof body.capacity !== "number" || body.capacity <= 0) {
+        if (isNaN(body.capacity) || body.capacity <= 0) {
             throw new Error("Error creating warehouse: please enter a valid capacity.");
         }
         const response = await fetch(`http://localhost:8080/warehouses`,

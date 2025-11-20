@@ -108,70 +108,70 @@ const WarehouseTable = ({ data, onChangeView, onSelectWarehouse, handleDeleteWar
                     value={searchTerm}
                 />
             </div>
+            <div className="rounded-xl overflow-hidden shadow">
+                <Table className="bg-neutral-700 text-neutral-200">
+                    
+                    <TableHeader className="bg-neutral-800 text-neutral-100">
+                        <TableRow>
+                            <TableHead onClick={() => {
+                                if (sortedBy === "name") {
+                                    setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
+                                }
+                                setSortedBy("name");
+                            }} className="cursor-pointer">
+                                <div className="flex flex-row items-center">
+                                    Warehouse
+                                    {renderChevron("name")}
+                                </div>
+                            </TableHead>
 
-            <Table className="bg-neutral-700 text-neutral-200 shadow">
-                
-                <TableHeader className="bg-neutral-800 text-neutral-100">
-                    <TableRow>
-                        <TableHead onClick={() => {
-                            if (sortedBy === "name") {
-                                setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
-                            }
-                            setSortedBy("name");
-                        }} className="cursor-pointer">
-                            <div className="flex flex-row items-center">
-                                Warehouse
-                                {renderChevron("name")}
-                            </div>
-                        </TableHead>
+                            <TableHead onClick={() => {
+                                if (sortedBy === "location") {
+                                    setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
+                                }
+                                setSortedBy("location");
+                            }} className="cursor-pointer">
+                                <div className="flex flex-row items-center">
+                                    Location
+                                    {renderChevron("location")}
+                                </div>
+                            </TableHead>
+                            <TableHead onClick={() => {
+                                if (sortedBy === "capacity") {
+                                    setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
+                                }
+                                setSortedBy("capacity");
+                            }} className="text-center cursor-pointer">
+                                <div className="flex flex-row items-center justify-center">
+                                    Capacity
+                                    {renderChevron("capacity")}
+                                </div>
+                            </TableHead>
 
-                        <TableHead onClick={() => {
-                            if (sortedBy === "location") {
-                                setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
-                            }
-                            setSortedBy("location");
-                        }} className="cursor-pointer">
-                            <div className="flex flex-row items-center">
-                                Location
-                                {renderChevron("location")}
-                            </div>
-                        </TableHead>
-                        <TableHead onClick={() => {
-                            if (sortedBy === "capacity") {
-                                setSortMethod(sortMethod === "ascending" ? "descending" : "ascending")
-                            }
-                            setSortedBy("capacity");
-                        }} className="text-center cursor-pointer">
-                            <div className="flex flex-row items-center justify-center">
-                                Capacity
-                                {renderChevron("capacity")}
-                            </div>
-                        </TableHead>
+                            <TableHead className="text-right cursor-pointer">Actions</TableHead>
 
-                        <TableHead className="text-right cursor-pointer">Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
 
-                    </TableRow>
-                </TableHeader>
+                    <TableBody>
+                        {filteredData.map((row) => (
+                        <TableRow key={row.id} onClick={() => handleClickViewInventory(row)} className="hover:bg-neutral-600 cursor-pointer border-neutral-500">
+                            <TableCell className="font-medium h-14">{row.name}</TableCell>
+                            <TableCell>
+                                {row.location}</TableCell>
+                            <TableCell className="text-center">{row.usedCapacity + "/" + row.capacity}</TableCell>
+                            <TableCell className="text-right pr-5">
+                                <ActionsMenu 
+                                    data={[row, row, row]}
+                                    actions={warehouseActions}
+                                />
+                            </TableCell>
+                        </TableRow>
+                        ))}
+                    </TableBody>
 
-                <TableBody>
-                    {filteredData.map((row) => (
-                    <TableRow key={row.id} onClick={() => handleClickViewInventory(row)} className="hover:bg-neutral-600 cursor-pointer border-neutral-500">
-                        <TableCell className="font-medium h-14">{row.name}</TableCell>
-                        <TableCell>
-                            {row.location}</TableCell>
-                        <TableCell className="text-center">{row.usedCapacity + "/" + row.capacity}</TableCell>
-                        <TableCell className="text-right pr-5">
-                            <ActionsMenu 
-                                data={[row, row, row]}
-                                actions={warehouseActions}
-                            />
-                        </TableCell>
-                    </TableRow>
-                    ))}
-                </TableBody>
-
-            </Table>
-
+                </Table>
+            </div>
             <DeleteWarehouseModal
                 open={deleteDialogIsOpen}
                 setOpen={setDeleteDialogIsOpen}

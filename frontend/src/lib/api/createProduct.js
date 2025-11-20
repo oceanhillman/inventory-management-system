@@ -3,7 +3,7 @@ export default async function createProduct(body) {
         if (body.sku === "" || body.name === "" || body.description === "" || body.category === "" || body.price === "") {
             throw new Error("Error creating product: please ensure there are no empty fields.")
         }
-        if (typeof body.price !== "number" || body.price < 0.01) {
+        if (isNaN(body.price) || body.price < 0.01) {
             throw new Error("Error creating product: please enter a valid price.")
         }
         const response = await fetch(`http://localhost:8080/products`,

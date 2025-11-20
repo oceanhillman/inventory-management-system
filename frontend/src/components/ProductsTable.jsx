@@ -111,83 +111,85 @@ const ProductsTable = ({ data, onChangeView, warehouse, handleAddInventory, hand
                 />
             </div>
 
-            <Table className="bg-neutral-700 text-neutral-200 shadow">
-                <TableHeader className="bg-neutral-800 text-neutral-100">
-                    <TableRow>
+            <div className="rounded-xl overflow-hidden shadow">
+                <Table className="bg-neutral-700 text-neutral-200">
+                    <TableHeader className="bg-neutral-800 text-neutral-100">
+                        <TableRow>
 
-                        <TableHead onClick={() => {
-                            if (sortedBy === "sku") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
-                            setSortedBy("sku");
-                        }} className="cursor-pointer">
-                            <div className="flex items-center gap-1">
-                                SKU
-                                {renderChevron("sku")}
-                            </div>
-                        </TableHead>
+                            <TableHead onClick={() => {
+                                if (sortedBy === "sku") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
+                                setSortedBy("sku");
+                            }} className="cursor-pointer">
+                                <div className="flex items-center gap-1">
+                                    SKU
+                                    {renderChevron("sku")}
+                                </div>
+                            </TableHead>
 
-                        <TableHead onClick={() => {
-                            if (sortedBy === "name") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
-                            setSortedBy("name");
-                        }} className="cursor-pointer">
-                            <div className="flex items-center gap-1">
-                                Name
-                                {renderChevron("name")}
-                            </div>
-                        </TableHead>
+                            <TableHead onClick={() => {
+                                if (sortedBy === "name") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
+                                setSortedBy("name");
+                            }} className="cursor-pointer">
+                                <div className="flex items-center gap-1">
+                                    Name
+                                    {renderChevron("name")}
+                                </div>
+                            </TableHead>
 
-                        <TableHead onClick={() => {
-                            if (sortedBy === "description") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
-                            setSortedBy("description");
-                        }} className="cursor-pointer text-center">
-                            <div className="flex items-center justify-center gap-1">
-                                Description
-                                {renderChevron("description")}
-                            </div>
-                        </TableHead>
+                            <TableHead onClick={() => {
+                                if (sortedBy === "description") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
+                                setSortedBy("description");
+                            }} className="cursor-pointer text-center">
+                                <div className="flex items-center justify-center gap-1">
+                                    Description
+                                    {renderChevron("description")}
+                                </div>
+                            </TableHead>
 
-                        <TableHead onClick={() => {
-                            if (sortedBy === "category") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
-                            setSortedBy("category");
-                        }} className="cursor-pointer">
-                            <div className="flex items-center gap-1">
-                                Category
-                                {renderChevron("category")}
-                            </div>
-                        </TableHead>
+                            <TableHead onClick={() => {
+                                if (sortedBy === "category") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
+                                setSortedBy("category");
+                            }} className="cursor-pointer">
+                                <div className="flex items-center gap-1">
+                                    Category
+                                    {renderChevron("category")}
+                                </div>
+                            </TableHead>
 
-                        <TableHead onClick={() => {
-                            if (sortedBy === "price") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
-                            setSortedBy("price");
-                        }} className="cursor-pointer">
-                            <div className="flex items-center gap-1">
-                                Price
-                                {renderChevron("price")}
-                            </div>
-                        </TableHead>
+                            <TableHead onClick={() => {
+                                if (sortedBy === "price") setSortMethod(sortMethod === "ascending" ? "descending" : "ascending");
+                                setSortedBy("price");
+                            }} className="cursor-pointer">
+                                <div className="flex items-center gap-1">
+                                    Price
+                                    {renderChevron("price")}
+                                </div>
+                            </TableHead>
 
-                        <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                </TableHeader>
+                            <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
 
-                <TableBody>
-                    {filteredData.map((row) => (
-                    <TableRow key={row.id} onClick={() => addInventory(row)} 
-                    className="hover:bg-neutral-600 cursor-pointer border-neutral-500">
-                        <TableCell className="font-medium h-14">{row.sku}</TableCell>
-                        <TableCell>{row.name}</TableCell>
-                        <TableCell className="text-center">{row.description}</TableCell>
-                        <TableCell>{row.category}</TableCell>
-                        <TableCell>{"$" + row.price}</TableCell>
-                        <TableCell className="text-right pr-5">
-                            <ActionsMenu 
-                                data={[row, row, row]}
-                                actions={productActions}
-                            />
-                        </TableCell>
-                    </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    <TableBody>
+                        {filteredData.map((row) => (
+                        <TableRow key={row.id} onClick={() => addInventory(row)} 
+                        className="hover:bg-neutral-600 cursor-pointer border-neutral-500">
+                            <TableCell className="font-medium h-14">{row.sku}</TableCell>
+                            <TableCell>{row.name}</TableCell>
+                            <TableCell className="text-center">{row.description}</TableCell>
+                            <TableCell>{row.category}</TableCell>
+                            <TableCell>{"$" + row.price}</TableCell>
+                            <TableCell className="text-right pr-5">
+                                <ActionsMenu 
+                                    data={[row, row, row]}
+                                    actions={productActions}
+                                />
+                            </TableCell>
+                        </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+                </div>
             
             <CreateProductModal
                 open={createDialogIsOpen}

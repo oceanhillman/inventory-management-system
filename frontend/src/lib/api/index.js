@@ -12,3 +12,4 @@ export { default as deleteInventory } from './deleteInventory';
 export { default as editProduct } from './editProduct';
 export { default as deleteProduct } from './deleteProduct';
 export { default as transferInventory } from './transferInventory';
+export { default as getRecentActivity } from './getRecentActivity';
